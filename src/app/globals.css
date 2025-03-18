@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  height: 100vh;
+}
+
+.inter-400 {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.inter-500 {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.inter-600 {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.rs-slider-progress-bar {
+  background-color: #00855c !important;
+}
+
+.markdown {
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 400;
+  font-style: normal;
+  color: black;
+
+  padding: 1rem;
+
+  border-color: rgb(235 233 241 / 1);
+  border-width: 1px;
+  border-radius: 0.25rem;
+  overflow: auto;
+  flex-grow: 1;
+  min-height: 0;
+
+  background-color: white;
+}
+
+.markdown h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.markdown h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.markdown h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.markdown p {
+  margin-bottom: 0.5rem;
+}
+
+.markdown ul {
+  margin-left: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown ol {
+  margin-left: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown ul li {
+  list-style: disc;
+}
+
+.markdown ol li {
+  list-style: decimal;
+}
