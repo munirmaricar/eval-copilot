@@ -2,8 +2,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { LayoutWrapper } from "@/app/LayoutWrapper";
-import { cookies, headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,16 +10,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = cookies();
-  const hasLoaded = cookieStore.get("has-loaded");
-
-  const headersList = headers();
-  const url = headersList.get("x-url");
-
-  if (!hasLoaded && url && !url.includes("/metric/create")) {
-    redirect("/metric/create");
-  }
-
   return (
     <html lang="en">
       <head>

@@ -12,11 +12,6 @@ import Image from "next/image";
 import { Tooltip } from "@/app/lib/components/Tooltips/Tooltip";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { useContext } from "react";
-import {
-  GenerateClickThroughContext,
-  GenerateClickThroughStepID,
-} from "@/app/lib/components/Generate/GenerateClickThrough/GenerateClickThroughContext";
 
 const getAtlaScoreColour = ({
   scoringCriteria,
@@ -133,7 +128,7 @@ function TestCasesTableRow({
     "border-r border-border-primary p-3 bg-white",
     {
       "border-b": !isLastRow,
-    },
+    }
   );
   const sharedTextAreaClasses =
     "inter-400 text-xs text-text-secondary w-full h-full min-h-44 p-2 overflow-hidden";
@@ -191,7 +186,7 @@ function TestCasesTableRow({
           style: {
             width: "max-content",
           },
-        },
+        }
       );
 
       return;
@@ -221,15 +216,11 @@ function TestCasesTableRow({
 
   const atlaScoreIsSuccess = ["green", "none"].includes(atlaScoreColour);
 
-  const { isStep } = useContext(GenerateClickThroughContext);
-  const isFirstClickThroughStep = isStep(GenerateClickThroughStepID.STEP_1);
-  const isSecondClickThroughStep = isStep(GenerateClickThroughStepID.STEP_2);
-
   return (
     <div className="flex flex-grow">
       <VariableWidthCell
         className={classNames(sharedCellClasses, {
-          "z-50": isFirstClickThroughStep && isFirstRow,
+          "z-50": isFirstRow,
         })}
       >
         <textarea
@@ -248,7 +239,7 @@ function TestCasesTableRow({
       {context !== undefined && (
         <VariableWidthCell
           className={classNames(sharedCellClasses, {
-            "z-50": isFirstClickThroughStep && isFirstRow,
+            "z-50": isFirstRow,
           })}
         >
           <textarea
@@ -268,7 +259,7 @@ function TestCasesTableRow({
       {reference !== undefined && (
         <VariableWidthCell
           className={classNames(sharedCellClasses, {
-            "z-50": isFirstClickThroughStep && isFirstRow,
+            "z-50": isFirstRow,
           })}
         >
           <textarea
@@ -287,7 +278,7 @@ function TestCasesTableRow({
       )}
       <VariableWidthCell
         className={classNames(sharedCellClasses, {
-          "z-50": isFirstClickThroughStep && isFirstRow,
+          "z-50": isFirstRow,
         })}
       >
         <textarea
@@ -305,7 +296,7 @@ function TestCasesTableRow({
       </VariableWidthCell>
       <FixedWidthCell
         className={classNames(sharedCellClasses, {
-          "z-50": isSecondClickThroughStep && isFirstRow,
+          "z-50": isFirstRow,
         })}
       >
         {scoringCriteria === ScoringCriteria.OneToFive && (
@@ -344,7 +335,7 @@ function TestCasesTableRow({
       </FixedWidthCell>
       <FixedWidthCell
         className={classNames(sharedCellClasses, "flex flex-col items-center", {
-          "z-50": isSecondClickThroughStep && isFirstRow,
+          "z-50": isFirstRow,
         })}
       >
         {atlaScore === null ? (
@@ -415,7 +406,7 @@ function TestCasesTableRow({
       </FixedWidthCell>
       <VariableWidthCell
         className={classNames(sharedCellClasses, {
-          "z-50": isSecondClickThroughStep && isFirstRow,
+          "z-50": isFirstRow,
         })}
       >
         <textarea
@@ -429,7 +420,7 @@ function TestCasesTableRow({
       <FixedWidthCell
         width="w-10"
         className={classNames(sharedCellClasses, "border-r-0 flex", {
-          "z-50": isSecondClickThroughStep && isFirstRow,
+          "z-50": isFirstRow,
         })}
       >
         <button disabled={deleteDisabled} onClick={() => removeTestCase(id)}>

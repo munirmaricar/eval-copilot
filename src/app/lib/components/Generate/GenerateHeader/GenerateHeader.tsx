@@ -10,10 +10,6 @@ import { useDeployMetric } from "@/app/lib/queries/useDeployMetric";
 import { getDeployDisabledTooltip } from "@/app/lib/components/Prompt/PopulatedPrompt/PopulatedPromptHeader";
 import { codeModalContext } from "@/app/lib/components/CodeModal/CodeModalContext";
 import { useContext } from "react";
-import {
-  GenerateClickThroughContext,
-  GenerateClickThroughStepID,
-} from "@/app/lib/components/Generate/GenerateClickThrough/GenerateClickThroughContext";
 import classNames from "classnames";
 
 function GenerateHeader({
@@ -78,11 +74,6 @@ function GenerateHeader({
     }
   };
 
-  const { isStep } = useContext(GenerateClickThroughContext);
-  const isSecondClickThroughStep = isStep(GenerateClickThroughStepID.STEP_2);
-  const isThirdClickThroughStep = isStep(GenerateClickThroughStepID.STEP_3);
-  const isFourthClickThroughStep = isStep(GenerateClickThroughStepID.STEP_4);
-
   return (
     <div className="flex items-center mb-6 justify-between h-6 px-6">
       <div className="flex items-center">
@@ -111,12 +102,7 @@ function GenerateHeader({
         <CohensKappa kappa={kappa} />
       </div>
       <div className="flex items-center">
-        <div
-          className={classNames("flex items-center bg-white", {
-            "z-50 rounded-lg shadow-[0_0_0_10px_white]":
-              isThirdClickThroughStep,
-          })}
-        >
+        <div className={classNames("flex items-center bg-white")}>
           <PromptToggle
             checked={showPrompt}
             onChange={(event) => onPromptToggle(event.target.checked)}
@@ -129,10 +115,7 @@ function GenerateHeader({
           onClick={runAllEvaluations}
           disabled={runAllEvaluationsDisabled}
           disabledTooltip={getRunEvalsDisabledText()}
-          className={classNames("mx-3", {
-            "z-50 rounded-lg shadow-[0_0_0_8px_white]":
-              isSecondClickThroughStep,
-          })}
+          className={classNames("mx-3")}
         >
           <Image
             src={
@@ -161,9 +144,6 @@ function GenerateHeader({
             deployDisabled: deployPromptDisabled,
             initialMetric: isInitialMetric,
             templateChanged,
-          })}
-          className={classNames({
-            "z-50 shadow-[0_0_0_10px_white]": isFourthClickThroughStep,
           })}
         >
           <Image

@@ -21,8 +21,6 @@ function LayoutWrapper({
     if (pathname === "/debug/clear-storage") {
       return;
     }
-
-    fetch("/api/set-has-loaded-cookie");
   }, []);
 
   return (

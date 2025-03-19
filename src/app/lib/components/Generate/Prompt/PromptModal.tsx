@@ -4,15 +4,11 @@ import { SecondaryButton } from "@/app/lib/components/Buttons/SecondaryButton";
 import { MetricResponse } from "@/app/lib/api/metrics/get";
 import { useRouter } from "next/navigation";
 import { AIPrompt } from "@/app/lib/components/AIPrompt/AIPrompt";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useUpdatePrompt } from "@/app/lib/open-ai/useUpdatePrompt";
 import { checkIsInitialMetric } from "@/app/lib/metrics/checkIsInitialMetric";
 import { promptUpdateOptions } from "@/app/lib/components/AIPrompt/options";
 import { Prompt } from "@/app/lib/components/Prompt/PopulatedPrompt/Prompt";
-import {
-  GenerateClickThroughContext,
-  GenerateClickThroughStepID,
-} from "@/app/lib/components/Generate/GenerateClickThrough/GenerateClickThroughContext";
 import classNames from "classnames";
 
 function PromptModal({
@@ -46,14 +42,10 @@ function PromptModal({
     onClose();
   };
 
-  const { isStep } = useContext(GenerateClickThroughContext);
-  const isThirdClickThroughStep = isStep(GenerateClickThroughStepID.STEP_3);
-
   return (
     <div
       className={classNames(
-        "absolute h-3/4 border bottom-8 right-8 w-[550px] bg-gray border-border-primary rounded-xl shadow-2xl p-4 flex flex-col z-20",
-        { "z-50 rounded-lg shadow-[0_0_0_10px_white]": isThirdClickThroughStep },
+        "absolute h-3/4 border bottom-8 right-8 w-[550px] bg-gray border-border-primary rounded-xl shadow-2xl p-4 flex flex-col z-20"
       )}
     >
       <button onClick={handleOnClose} className="absolute top-3.5 right-5 z-20">
@@ -118,7 +110,7 @@ function PromptModal({
                 <PrimaryButton
                   onClick={() =>
                     router.push(
-                      `/metric/create/?metric=${selectedMetric.id}&prompt=${selectedPrompt.id}&page=add-examples&allow-back=false&redirect=${encodeURIComponent(`/generate?metric=${selectedMetric.id}&prompt=${selectedPrompt.id}`)}`,
+                      `/metric/create/?metric=${selectedMetric.id}&prompt=${selectedPrompt.id}&page=add-examples&allow-back=false&redirect=${encodeURIComponent(`/generate?metric=${selectedMetric.id}&prompt=${selectedPrompt.id}`)}`
                     )
                   }
                   className="mr-3 px-4"

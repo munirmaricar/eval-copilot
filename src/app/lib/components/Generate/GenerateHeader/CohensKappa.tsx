@@ -2,20 +2,12 @@ import classNames from "classnames";
 import Image from "next/image";
 import { Tooltip as TT } from "react-tooltip";
 import { Tooltip } from "@/app/lib/components/Tooltips/Tooltip";
-import { useContext } from "react";
-import {
-  GenerateClickThroughContext,
-  GenerateClickThroughStepID,
-} from "@/app/lib/components/Generate/GenerateClickThrough/GenerateClickThroughContext";
 
 function CohensKappa({ kappa }: { kappa: number | null }) {
   const hasKappa = kappa !== null;
   const lowScore = hasKappa && kappa < 0.2;
   const mediumScore = hasKappa && kappa >= 0.2 && kappa <= 0.41;
   const highScore = hasKappa && kappa > 0.41;
-
-  const { isStep } = useContext(GenerateClickThroughContext);
-  const isFourthClickThroughStep = isStep(GenerateClickThroughStepID.STEP_4);
 
   const classes = classNames(
     "inter-500 text-xs py-1.5 px-4 rounded cursor-pointer border flex justify-center",
@@ -27,8 +19,7 @@ function CohensKappa({ kappa }: { kappa: number | null }) {
         mediumScore,
       "bg-success-primary-0 text-success-primary border-text-secondary":
         highScore,
-      "z-50 rounded-lg shadow-[0_0_0_10px_white]": isFourthClickThroughStep,
-    },
+    }
   );
 
   const noKappaTooltipHtml = `

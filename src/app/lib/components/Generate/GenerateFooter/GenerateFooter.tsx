@@ -1,11 +1,6 @@
 import { SecondaryButton } from "@/app/lib/components/Buttons/SecondaryButton";
 import Image from "next/image";
 import { TestCaseCollectionsButton } from "@/app/lib/components/Generate/GenerateFooter/TestCaseCollections/TestCaseCollectionsButton";
-import { useContext } from "react";
-import {
-  GenerateClickThroughContext,
-  GenerateClickThroughStepID,
-} from "@/app/lib/components/Generate/GenerateClickThrough/GenerateClickThroughContext";
 import classNames from "classnames";
 
 function GenerateFooter({
@@ -17,16 +12,9 @@ function GenerateFooter({
   setCollectionsModalPage: (page: string | null) => void;
   setShowPrompt: (value: boolean) => void;
 }) {
-  const { isStep } = useContext(GenerateClickThroughContext);
-  const isFirstClickThroughStep = isStep(GenerateClickThroughStepID.STEP_1);
-
   return (
     <div className="flex items-start mt-6 px-6">
-      <div
-        className={classNames("flex bg-white", {
-          "z-50 rounded-lg shadow-[0_0_0_10px_white]": isFirstClickThroughStep,
-        })}
-      >
+      <div className={classNames("flex bg-white")}>
         <SecondaryButton onClick={onAddTestCase} className="mr-4">
           <Image
             src={"/plus-icon-black.svg"}
