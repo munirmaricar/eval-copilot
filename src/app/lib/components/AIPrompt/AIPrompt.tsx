@@ -22,7 +22,7 @@ function AIPrompt({
   return (
     <div
       ref={ref}
-      className="flex flex-col h-36 absolute border border-border-primary rounded bottom-14 w-full bg-white"
+      className="flex flex-col h-36 fixed border border-border-primary rounded bottom-14 w-full bg-white z-[9999]"
     >
       <div className="flex-grow min-h-0 overflow-auto flex flex-col items-stretch pt-2 border-b border-border-primary">
         {options.map((option) => (

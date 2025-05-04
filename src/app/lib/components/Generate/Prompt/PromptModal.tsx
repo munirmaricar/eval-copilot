@@ -45,7 +45,7 @@ function PromptModal({
   return (
     <div
       className={classNames(
-        "absolute h-3/4 border bottom-8 right-8 w-[550px] bg-gray border-border-primary rounded-xl shadow-2xl p-4 flex flex-col z-20"
+        "fixed h-3/4 border bottom-8 right-8 w-[550px] bg-gray border-border-primary rounded-xl shadow-2xl p-4 flex flex-col z-[9999]"
       )}
     >
       <button onClick={handleOnClose} className="absolute top-3.5 right-5 z-20">

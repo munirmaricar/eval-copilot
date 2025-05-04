@@ -29,7 +29,7 @@ function CodeModal({
     metricName,
   });
   return (
-    <div className="absolute w-full h-full [backdrop-filter:blur(3px)] top-0 flex flex-col items-center justify-center z-50">
+    <div className="fixed w-full h-full [backdrop-filter:blur(3px)] top-0 flex flex-col items-center justify-center z-[9999]">
       <div
         ref={containerRef}
         className="bg-white w-2/3 shadow-lg rounded-xl p-6 border border-border-primary"
@@ -57,7 +57,7 @@ function CodeModal({
                 window.open(
                   "https://docs.atla-ai.com/introduction",
                   "_blank",
-                  "noopener,noreferrer",
+                  "noopener,noreferrer"
                 )
               }
               className="mr-3"
