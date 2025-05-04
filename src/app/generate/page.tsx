@@ -103,6 +103,7 @@ export default function Generate() {
           selectedMetric={selectedMetric}
           setSelectedPrompt={handleSetSelectedPrompt}
           templateChanged={templateChanged}
+          completeTestCases={completeTestCases}
         />
         {!isLoading && testCases && (
           <GenerateBody

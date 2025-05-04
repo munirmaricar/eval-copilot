@@ -8,6 +8,8 @@ import { PrimaryButton } from "@/app/lib/components/Buttons/PrimaryButton";
 import { checkIsInitialMetric } from "@/app/lib/metrics/checkIsInitialMetric";
 import { useDeployMetric } from "@/app/lib/queries/useDeployMetric";
 import { getDeployDisabledTooltip } from "@/app/lib/components/Prompt/PopulatedPrompt/PopulatedPromptHeader";
+import { ScoreDistributionPanel } from "@/app/lib/components/Generate/ScoreDistribution/ScoreDistributionPanel";
+import { GetTestCasesForMetricResponse } from "@/app/lib/api/testCases/getTestCasesForMetric";
 import { codeModalContext } from "@/app/lib/components/CodeModal/CodeModalContext";
 import { useContext } from "react";
 import classNames from "classnames";
@@ -25,6 +27,7 @@ function GenerateHeader({
   selectedMetric,
   setSelectedPrompt,
   templateChanged,
+  completeTestCases,
 }: {
   onBack: () => void;
   onPromptToggle: (value: boolean) => void;
@@ -41,6 +44,7 @@ function GenerateHeader({
     selectedMetricId: string | null;
   }) => void;
   templateChanged: boolean;
+  completeTestCases: GetTestCasesForMetricResponse | null;
 }) {
   const runAllEvaluationsDisabled =
     runningAllEvaluations || noCompleteTestCases || templateChanged;
@@ -75,91 +79,114 @@ function GenerateHeader({
   };
 
   return (
-    <div className="flex items-center mb-6 justify-between h-6 px-6">
-      <div className="flex items-center">
-        <button onClick={onBack} className="mr-4">
-          <Image
-            src="/icon-arrow-left-black.svg"
-            alt="Back to all metrics"
-            width="24"
-            height="24"
-          />
-        </button>
-        <h1 className="inter-600 text-lg text-text-secondary mr-2">{title}</h1>
-        {!isInitialMetric && (
-          <VersionDropdown
-            selectedPrompt={selectedPrompt}
-            onChange={(value) =>
-              setSelectedPrompt({
-                selectedPromptId: value?.value!,
-                selectedMetricId: selectedMetric?.id!,
+    <div className="flex flex-col mb-6 px-6">
+      <div className="flex items-center justify-between h-6 mb-4">
+        <div className="flex items-center">
+          <button onClick={onBack} className="mr-4">
+            <Image
+              src="/icon-arrow-left-black.svg"
+              alt="Back to all metrics"
+              width="24"
+              height="24"
+            />
+          </button>
+          <h1 className="inter-600 text-lg text-text-secondary mr-2">
+            {title}
+          </h1>
+          {!isInitialMetric && (
+            <VersionDropdown
+              selectedPrompt={selectedPrompt}
+              onChange={(value) =>
+                setSelectedPrompt({
+                  selectedPromptId: value?.value!,
+                  selectedMetricId: selectedMetric?.id!,
+                })
+              }
+              prompts={selectedMetric?.prompts || null}
+              className="mr-3"
+            />
+          )}
+          <CohensKappa kappa={kappa} />
+        </div>
+        <div className="flex items-center">
+          <div className={classNames("flex items-center bg-white")}>
+            <PromptToggle
+              checked={showPrompt}
+              onChange={(event) => onPromptToggle(event.target.checked)}
+            />
+            <p className="ml-2 inter-600 text-sm text-text-secondary">
+              Show eval prompt
+            </p>
+          </div>
+          <SecondaryButton
+            onClick={runAllEvaluations}
+            disabled={runAllEvaluationsDisabled}
+            disabledTooltip={getRunEvalsDisabledText()}
+            className={classNames("mx-3")}
+          >
+            <Image
+              src={
+                runAllEvaluationsDisabled
+                  ? "/refresh-icon-disabled.svg"
+                  : "/refresh-icon-black.svg"
+              }
+              alt="Run all evaluations"
+              width="16"
+              height="16"
+              className="mr-2"
+            />
+            Run evaluations
+          </SecondaryButton>
+          <PrimaryButton
+            onClick={() =>
+              deployMetric({
+                metricId: selectedMetric!.id,
+                promptId: selectedPrompt!.id,
               })
             }
-            prompts={selectedMetric?.prompts || null}
-            className="mr-3"
-          />
-        )}
-        <CohensKappa kappa={kappa} />
-      </div>
-      <div className="flex items-center">
-        <div className={classNames("flex items-center bg-white")}>
-          <PromptToggle
-            checked={showPrompt}
-            onChange={(event) => onPromptToggle(event.target.checked)}
-          />
-          <p className="ml-2 inter-600 text-sm text-text-secondary">
-            Show eval prompt
-          </p>
+            disabled={deployPromptDisabled}
+            fullWidth={false}
+            disabledTooltipPosition="top-start"
+            disabledTooltip={getDeployDisabledTooltip({
+              deployDisabled: deployPromptDisabled,
+              initialMetric: isInitialMetric,
+              templateChanged,
+            })}
+          >
+            <Image
+              src={
+                deployPromptDisabled
+                  ? "/atla-icon-disabled.svg"
+                  : "/atla-icon-white.svg"
+              }
+              alt="Deploy eval prompt"
+              width="16"
+              height="16"
+              className="mr-2"
+            />
+            Deploy
+          </PrimaryButton>
         </div>
-        <SecondaryButton
-          onClick={runAllEvaluations}
-          disabled={runAllEvaluationsDisabled}
-          disabledTooltip={getRunEvalsDisabledText()}
-          className={classNames("mx-3")}
-        >
-          <Image
-            src={
-              runAllEvaluationsDisabled
-                ? "/refresh-icon-disabled.svg"
-                : "/refresh-icon-black.svg"
-            }
-            alt="Run all evaluations"
-            width="16"
-            height="16"
-            className="mr-2"
-          />
-          Run evaluations
-        </SecondaryButton>
-        <PrimaryButton
-          onClick={() =>
-            deployMetric({
-              metricId: selectedMetric!.id,
-              promptId: selectedPrompt!.id,
-            })
-          }
-          disabled={deployPromptDisabled}
-          fullWidth={false}
-          disabledTooltipPosition="top-start"
-          disabledTooltip={getDeployDisabledTooltip({
-            deployDisabled: deployPromptDisabled,
-            initialMetric: isInitialMetric,
-            templateChanged,
-          })}
-        >
-          <Image
-            src={
-              deployPromptDisabled
-                ? "/atla-icon-disabled.svg"
-                : "/atla-icon-white.svg"
-            }
-            alt="Deploy eval prompt"
-            width="16"
-            height="16"
-            className="mr-2"
-          />
-          Deploy
-        </PrimaryButton>
       </div>
+      {completeTestCases && completeTestCases.length > 0 && (
+        <div className="flex items-center mb-2">
+          <ScoreDistributionPanel
+            testCases={completeTestCases.map((tc) => ({
+              id: tc.id,
+              input: tc.input,
+              response: tc.response,
+              context: tc.context,
+              reference: tc.reference,
+              expectedScore: tc.expected_score,
+              atlaScore: tc.atla_score,
+              critique: tc.critique,
+            }))}
+            scoringCriteria={selectedMetric?.scoring_criteria || ""}
+            promptVersions={selectedMetric?.prompts || null}
+            currentPromptId={selectedPrompt?.id}
+          />
+        </div>
+      )}
     </div>
   );
 }
