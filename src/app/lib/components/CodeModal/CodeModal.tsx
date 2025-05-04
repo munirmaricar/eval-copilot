@@ -57,7 +57,7 @@ function CodeModal({
                 window.open(
                   "https://docs.atla-ai.com/introduction",
                   "_blank",
-                  "noopener,noreferrer"
+                  "noopener,noreferrer",
                 )
               }
               className="mr-3"

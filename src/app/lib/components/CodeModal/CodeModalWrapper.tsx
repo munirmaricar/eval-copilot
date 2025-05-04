@@ -3,8 +3,7 @@ import { CodeModal } from "@/app/lib/components/CodeModal/CodeModal";
 import { codeModalContext } from "@/app/lib/components/CodeModal/CodeModalContext";
 
 function CodeModalWrapper({ children }: { children: ReactNode }) {
-  const { closeCodeModal, codeModalValues } =
-    useContext(codeModalContext);
+  const { closeCodeModal, codeModalValues } = useContext(codeModalContext);
 
   return (
     <>

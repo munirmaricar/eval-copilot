@@ -1,6 +1,6 @@
 export const formatScoreLabel = (
   score: string,
-  scoringCriteria: string
+  scoringCriteria: string,
 ): string => {
   if (scoringCriteria === "Binary") {
     return score === "0" ? "Fail" : "Pass";
@@ -13,7 +13,7 @@ export const formatScoreLabel = (
 
 export const getScoreColor = (
   expected: number | null,
-  atla: number | null
+  atla: number | null,
 ): string => {
   if (expected === null || atla === null) return "bg-gray-200";
 
@@ -28,7 +28,7 @@ export const getScoreColor = (
 
 export const getScoreDifferenceDescription = (
   expected: number | null,
-  atla: number | null
+  atla: number | null,
 ): string => {
   if (expected === null || atla === null) return "Missing score";
 

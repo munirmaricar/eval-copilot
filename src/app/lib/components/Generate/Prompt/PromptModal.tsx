@@ -45,7 +45,7 @@ function PromptModal({
   return (
     <div
       className={classNames(
-        "fixed h-3/4 border bottom-8 right-8 w-[550px] bg-gray border-border-primary rounded-xl shadow-2xl p-4 flex flex-col z-[9999]"
+        "fixed h-3/4 border bottom-8 right-8 w-[550px] bg-gray border-border-primary rounded-xl shadow-2xl p-4 flex flex-col z-[9999]",
       )}
     >
       <button onClick={handleOnClose} className="absolute top-3.5 right-5 z-20">
@@ -110,7 +110,7 @@ function PromptModal({
                 <PrimaryButton
                   onClick={() =>
                     router.push(
-                      `/metric/create/?metric=${selectedMetric.id}&prompt=${selectedPrompt.id}&page=add-examples&allow-back=false&redirect=${encodeURIComponent(`/generate?metric=${selectedMetric.id}&prompt=${selectedPrompt.id}`)}`
+                      `/metric/create/?metric=${selectedMetric.id}&prompt=${selectedPrompt.id}&page=add-examples&allow-back=false&redirect=${encodeURIComponent(`/generate?metric=${selectedMetric.id}&prompt=${selectedPrompt.id}`)}`,
                     )
                   }
                   className="mr-3 px-4"

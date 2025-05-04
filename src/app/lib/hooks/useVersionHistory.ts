@@ -37,11 +37,11 @@ export const useVersionHistory = ({
             (tc) =>
               tc.expectedScore !== null &&
               tc.atlaScore !== null &&
-              tc.expectedScore === tc.atlaScore
+              tc.expectedScore === tc.atlaScore,
           ).length;
 
           const totalWithScores = currentTestCases.filter(
-            (tc) => tc.expectedScore !== null && tc.atlaScore !== null
+            (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
           ).length;
 
           const alignmentScore =
@@ -57,7 +57,7 @@ export const useVersionHistory = ({
 
         const versionFactor = Math.max(
           0.4,
-          version.version / promptVersions.length
+          version.version / promptVersions.length,
         );
 
         const simulatedTestCases = currentTestCases.map((tc) => {
@@ -73,7 +73,10 @@ export const useVersionHistory = ({
               ? tc.expectedScore
               : Math.max(
                   1,
-                  Math.min(5, tc.expectedScore + (Math.random() > 0.5 ? 1 : -1))
+                  Math.min(
+                    5,
+                    tc.expectedScore + (Math.random() > 0.5 ? 1 : -1),
+                  ),
                 ),
           };
         });
@@ -82,11 +85,11 @@ export const useVersionHistory = ({
           (tc) =>
             tc.expectedScore !== null &&
             tc.atlaScore !== null &&
-            tc.expectedScore === tc.atlaScore
+            tc.expectedScore === tc.atlaScore,
         ).length;
 
         const totalWithScores = simulatedTestCases.filter(
-          (tc) => tc.expectedScore !== null && tc.atlaScore !== null
+          (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
         ).length;
 
         const alignmentScore =

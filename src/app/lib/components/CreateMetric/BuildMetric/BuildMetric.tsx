@@ -63,19 +63,22 @@ const BuildMetric = ({
             templates={[
               {
                 name: "Hallucination",
-                description: "Assesses the presence of incorrect or unrelated content in the AI’s response.",
+                description:
+                  "Assesses the presence of incorrect or unrelated content in the AI’s response.",
                 onClick: () => onSelectedTemplateChange("hallucination"),
                 selected: selectedTemplate === "hallucination",
               },
               {
                 name: "Recall",
-                description: "Measures how complete the response captures the key facts and details.",
+                description:
+                  "Measures how complete the response captures the key facts and details.",
                 onClick: () => onSelectedTemplateChange("recall"),
                 selected: selectedTemplate === "recall",
               },
               {
                 name: "Precision",
-                description: "Assesses the relevance of all the information in the response.",
+                description:
+                  "Assesses the relevance of all the information in the response.",
                 onClick: () => onSelectedTemplateChange("precision"),
                 selected: selectedTemplate === "precision",
               },
@@ -86,7 +89,8 @@ const BuildMetric = ({
             templates={[
               {
                 name: "Logical Coherence",
-                description: "Measures the logical flow, consistency, and rationality of the response.",
+                description:
+                  "Measures the logical flow, consistency, and rationality of the response.",
                 onClick: () => onSelectedTemplateChange("logical-coherence"),
                 selected: selectedTemplate === "logical-coherence",
               },
@@ -103,7 +107,8 @@ const BuildMetric = ({
             templates={[
               {
                 name: "Faithfulness",
-                description: "Determines if the response is factually based on the provided context.",
+                description:
+                  "Determines if the response is factually based on the provided context.",
                 onClick: () => onSelectedTemplateChange("faithfulness"),
                 selected: selectedTemplate === "faithfulness",
               },

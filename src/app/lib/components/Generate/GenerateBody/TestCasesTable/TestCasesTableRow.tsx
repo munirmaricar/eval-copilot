@@ -128,7 +128,7 @@ function TestCasesTableRow({
     "border-r border-border-primary p-3 bg-white",
     {
       "border-b": !isLastRow,
-    }
+    },
   );
   const sharedTextAreaClasses =
     "inter-400 text-xs text-text-secondary w-full h-full min-h-44 p-2 overflow-hidden";
@@ -186,7 +186,7 @@ function TestCasesTableRow({
           style: {
             width: "max-content",
           },
-        }
+        },
       );
 
       return;

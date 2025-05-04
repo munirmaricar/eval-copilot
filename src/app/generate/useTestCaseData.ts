@@ -90,7 +90,7 @@ function useTestCaseData({
       id: string;
       key: string;
       value: string | number | null;
-    }[]
+    }[],
   ) => {
     if (testCases === null) {
       throw new Error("Test cases are not loaded yet");
@@ -158,7 +158,7 @@ function useTestCaseData({
           ...(hasReference ? { reference: reference || null } : {}),
           id: crypto.randomUUID(),
         };
-      })
+      }),
     );
   };
 

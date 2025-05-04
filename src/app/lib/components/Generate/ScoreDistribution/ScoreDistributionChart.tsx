@@ -64,7 +64,7 @@ const ScoreDistributionChart = ({
       score: formatScoreLabel(score, scoringCriteria),
       expected: counts.expected,
       atla: counts.atla,
-    })
+    }),
   );
 
   return (

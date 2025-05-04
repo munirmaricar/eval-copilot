@@ -19,7 +19,7 @@ function CohensKappa({ kappa }: { kappa: number | null }) {
         mediumScore,
       "bg-success-primary-0 text-success-primary border-text-secondary":
         highScore,
-    }
+    },
   );
 
   const noKappaTooltipHtml = `

@@ -8,9 +8,7 @@ const VariableWidthCell = ({
   children: ReactNode;
   className?: string;
 }) => {
-  return (
-    <div className={classNames("flex-1", className)}>{children}</div>
-  );
+  return <div className={classNames("flex-1", className)}>{children}</div>;
 };
 
 export { VariableWidthCell };

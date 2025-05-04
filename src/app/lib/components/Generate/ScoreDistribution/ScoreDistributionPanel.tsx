@@ -31,7 +31,7 @@ const ScoreDistributionPanel = ({
     (tc) =>
       tc.expectedScore !== null &&
       tc.atlaScore !== null &&
-      tc.expectedScore === tc.atlaScore
+      tc.expectedScore === tc.atlaScore,
   ).length;
 
   const perfectMatchesPercent =
@@ -43,13 +43,13 @@ const ScoreDistributionPanel = ({
   let improvementText = "";
   if (versionHistoryData.length > 1 && !loading) {
     const currentVersionData = versionHistoryData.find(
-      (v) => v.id === currentPromptId
+      (v) => v.id === currentPromptId,
     );
     const sortedVersions = [...versionHistoryData].sort(
-      (a, b) => b.version - a.version
+      (a, b) => b.version - a.version,
     );
     const currentIndex = sortedVersions.findIndex(
-      (v) => v.id === currentPromptId
+      (v) => v.id === currentPromptId,
     );
 
     if (currentIndex > 0 && currentIndex < sortedVersions.length) {

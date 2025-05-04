@@ -26,19 +26,19 @@ const calculateAlignmentScore = (testCases: TestCase[] | undefined): number => {
   if (!testCases || testCases.length === 0) return 0;
 
   const testCasesWithBothScores = testCases.filter(
-    (tc) => tc.expectedScore !== null && tc.atlaScore !== null
+    (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
   );
 
   if (testCasesWithBothScores.length === 0) return 0;
 
   const perfectMatches = testCasesWithBothScores.filter(
-    (tc) => tc.expectedScore === tc.atlaScore
+    (tc) => tc.expectedScore === tc.atlaScore,
   ).length;
 
   const closeMatches = testCasesWithBothScores.filter(
     (tc) =>
       tc.expectedScore !== tc.atlaScore &&
-      Math.abs(tc.expectedScore! - tc.atlaScore!) <= 1
+      Math.abs(tc.expectedScore! - tc.atlaScore!) <= 1,
   ).length;
 
   const alignmentScore =

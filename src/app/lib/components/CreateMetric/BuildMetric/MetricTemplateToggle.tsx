@@ -21,7 +21,11 @@ function MetricTemplateToggle({
   <p style="font-size: 12px;">${template.description}</p>
 `;
   return (
-    <Tooltip id={"template-description-" + template.name} html={tooltipHtml} width={208}>
+    <Tooltip
+      id={"template-description-" + template.name}
+      html={tooltipHtml}
+      width={208}
+    >
       <SecondaryButtonToggle
         key={template.name}
         toggled={template.selected}

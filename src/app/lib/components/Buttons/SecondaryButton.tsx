@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import classNames from "classnames";
 import { twMerge } from "tailwind-merge";
-import {Tooltip} from "@/app/lib/components/Tooltips/Tooltip";
+import { Tooltip } from "@/app/lib/components/Tooltips/Tooltip";
 
 const SecondaryButton = ({
   children,

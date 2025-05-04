@@ -1,11 +1,11 @@
-import {MetricExample} from "@/app/metric/create/useMetricData";
+import { MetricExample } from "@/app/metric/create/useMetricData";
 
 const isExampleComplete = (example: MetricExample) => {
-    return (
-        example.input !== null &&
-        example.response !== null &&
-        example.score !== null
-    );
+  return (
+    example.input !== null &&
+    example.response !== null &&
+    example.score !== null
+  );
 };
 
 export { isExampleComplete };

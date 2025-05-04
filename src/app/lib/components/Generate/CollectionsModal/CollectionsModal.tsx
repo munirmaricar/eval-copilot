@@ -41,8 +41,8 @@ function CollectionsModal({
       className={twMerge(
         classNames(
           "fixed max-h-96 border bottom-8 right-8 w-[550px] bg-gray border-border-primary rounded-xl shadow-2xl p-4 flex flex-col z-[9999]",
-          { "h-auto": isCreateCollectionPage }
-        )
+          { "h-auto": isCreateCollectionPage },
+        ),
       )}
     >
       <button onClick={onClose} className="absolute top-3.5 right-5 z-10">
