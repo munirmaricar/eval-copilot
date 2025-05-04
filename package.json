@@ -29,6 +29,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "react-toastify": "^10.0.5",
     "react-tooltip": "^5.28.0",
+    "recharts": "^2.15.3",
     "rsuite": "^5.69.0",
     "tailwind-merge": "^2.5.2",
     "zod": "^3.23.8"
