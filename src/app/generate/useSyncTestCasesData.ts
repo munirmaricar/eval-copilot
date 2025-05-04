@@ -1,5 +1,5 @@
 import { GetTestCasesForMetricResponse } from "@/app/lib/api/testCases/getTestCasesForMetric";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import debounce from "lodash/debounce";
 import isEqual from "lodash/isEqual";
 import { useUpdateTestCase } from "@/app/lib/queries/useUpdateTestCase";
@@ -22,7 +22,7 @@ function useSyncTestCasesData({
   const { mutate: updatePrompt } = useUpdatePrompt();
   const { mutate: deleteTestCase } = useDeleteTestCase();
 
-  const getNewTestCases = () => {
+  const getNewTestCases = useCallback(() => {
     if (testCases === null || dbTestCases === null) {
       return;
     }
@@ -52,9 +52,9 @@ function useSyncTestCasesData({
     };
 
     updatePrompt({ id: selectedMetric.id, metric: newMetric });
-  };
+  }, [testCases, dbTestCases, selectedMetric, createTestCase, updatePrompt]);
 
-  const getUpdatedTestCases = () => {
+  const getUpdatedTestCases = useCallback(() => {
     if (testCases === null || dbTestCases === null) {
       return;
     }
@@ -74,9 +74,9 @@ function useSyncTestCasesData({
     updatedTestCases.forEach((testCase) => {
       updateTestCase({ id: testCase.id, testCase });
     });
-  };
+  }, [testCases, dbTestCases, updateTestCase]);
 
-  const getDeletedTestCases = () => {
+  const getDeletedTestCases = useCallback(() => {
     if (testCases === null || dbTestCases === null) {
       return;
     }
@@ -88,9 +88,9 @@ function useSyncTestCasesData({
     deletedTestCases.forEach((testCase) => {
       deleteTestCase({ id: testCase.id });
     });
-  };
+  }, [testCases, dbTestCases, deleteTestCase]);
 
-  const syncData = () => {
+  const syncData = useCallback(() => {
     if (testCases === null || dbTestCases === null) {
       return;
     }
@@ -102,7 +102,13 @@ function useSyncTestCasesData({
     getNewTestCases();
     getUpdatedTestCases();
     getDeletedTestCases();
-  };
+  }, [
+    testCases,
+    dbTestCases,
+    getNewTestCases,
+    getUpdatedTestCases,
+    getDeletedTestCases,
+  ]);
 
   useEffect(() => {
     const debounced = debounce(() => {
@@ -112,7 +118,7 @@ function useSyncTestCasesData({
     debounced();
 
     return () => debounced.cancel();
-  }, [testCases, dbTestCases]);
+  }, [testCases, dbTestCases, syncData]);
 }
 
 export { useSyncTestCasesData };

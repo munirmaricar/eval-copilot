@@ -29,7 +29,7 @@ function useTestCaseData({
       setTestCases(dbTestCases);
       return;
     }
-  }, [dbTestCases]);
+  }, [dbTestCases, testCases]);
 
   useSyncTestCasesData({
     testCases,

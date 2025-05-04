@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useCompletion } from "ai/react";
 
 function useGeneratePrompt({
@@ -30,14 +30,14 @@ function useGeneratePrompt({
     if (!completion) {
       complete("");
     }
-  }, [skip, completion]);
+  }, [skip, completion, complete]);
 
   useEffect(() => {
     if (skip) {
       return;
     }
     onChange(completion);
-  }, [completion, skip]);
+  }, [completion, skip, onChange]);
 
   return { isLoading };
 }

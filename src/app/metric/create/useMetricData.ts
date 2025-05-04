@@ -46,13 +46,13 @@ function useMetricData() {
   const promptId = searchParams.get("prompt");
 
   const [selectedMetric, setSelectedMetric] = useState<MetricResponse | null>(
-    null,
+    null
   );
   const [selectedPrompt, setSelectedPrompt] = useState<
     MetricResponse["prompts"][number] | null
   >(null);
   const [scoringRuberic, setScoringRuberic] = useState<string | null>(
-    "one-to-five",
+    "one-to-five"
   );
   const [inputVariables, setInputVariables] = useState<
     InputVariablesMultiSelectOption[]
@@ -100,7 +100,7 @@ function useMetricData() {
     const hasContext = selectedPrompt.input_variables.includes("context");
     const hasReference = selectedPrompt.input_variables.includes("reference");
     const defaultScoreFromRuberic = getDefaultScoreFromRuberic(
-      scoringCriteriaToRubericId(selectedMetric.scoring_criteria),
+      scoringCriteriaToRubericId(selectedMetric.scoring_criteria)
     );
 
     let newExamples: MetricExample[] = selectedMetric.few_shots;
@@ -149,7 +149,7 @@ function useMetricData() {
     setScoringRuberic(getRuberic(selectedMetric.scoring_criteria));
     setInputVariables(inputVariableIdToOptions(selectedPrompt.input_variables));
     setCriteria(selectedPrompt.criteria);
-  }, [data, selectedMetric, selectedPrompt]);
+  }, [data, selectedMetric, selectedPrompt, searchParams]);
 
   const handleSetScoringRuberic = (scoringRuberic: string | null) => {
     if (scoringRuberic === null) {
@@ -160,7 +160,7 @@ function useMetricData() {
       examples.map((example) => ({
         ...example,
         score: getDefaultScoreFromRuberic(scoringRuberic),
-      })),
+      }))
     );
 
     setScoringRuberic(scoringRuberic);
@@ -182,7 +182,7 @@ function useMetricData() {
         critique: null,
         ...inputVariables.reduce(
           (acc, variable) => ({ ...acc, [variable.value]: null }),
-          {},
+          {}
         ),
       },
     ]);
@@ -248,12 +248,12 @@ function useMetricData() {
           input: null,
           response: null,
           score: getDefaultScoreFromRuberic(
-            scoringCriteriaToRubericId(selectedMetric!.scoring_criteria),
+            scoringCriteriaToRubericId(selectedMetric!.scoring_criteria)
           ),
           critique: null,
           ...inputVariables.reduce(
             (acc, variable) => ({ ...acc, [variable.value]: null }),
-            {},
+            {}
           ),
         };
       }
@@ -265,12 +265,12 @@ function useMetricData() {
   };
 
   const handleSetInputVariables = (
-    newInputVariables: InputVariablesMultiSelectOption[],
+    newInputVariables: InputVariablesMultiSelectOption[]
   ) => {
     setInputVariables(newInputVariables);
 
     const inputVariablesKeys = newInputVariables.map(
-      (variable) => variable.value,
+      (variable) => variable.value
     );
 
     setExamples(
@@ -285,7 +285,7 @@ function useMetricData() {
           score: example.score,
           critique: example.critique,
         } as MetricExample;
-      }),
+      })
     );
   };
 
@@ -301,7 +301,7 @@ function useMetricData() {
     return (
       data?.some(
         (metric) =>
-          metric.name === metricName?.replace(/\s/g, "_").toLowerCase(),
+          metric.name === metricName?.replace(/\s/g, "_").toLowerCase()
       ) || false
     );
   };

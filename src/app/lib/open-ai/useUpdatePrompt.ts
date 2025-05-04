@@ -25,7 +25,7 @@ function useUpdatePrompt({
     }
 
     onChange(completion);
-  }, [completion]);
+  }, [completion, onChange]);
 
   return { updatePrompt, isLoading };
 }

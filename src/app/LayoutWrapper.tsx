@@ -21,7 +21,7 @@ function LayoutWrapper({
     if (pathname === "/debug/clear-storage") {
       return;
     }
-  }, []);
+  }, [pathname]);
 
   return (
     <>
