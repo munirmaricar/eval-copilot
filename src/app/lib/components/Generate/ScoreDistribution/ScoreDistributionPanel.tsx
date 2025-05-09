@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { TestCase } from "@/app/lib/types";
 import Image from "next/image";
 import { SecondaryButton } from "@/app/lib/components/Buttons/SecondaryButton";
@@ -68,6 +68,16 @@ const ScoreDistributionPanel = ({
     }
   }
 
+  const scoreColor = useMemo(() => {
+    if (perfectMatchesPercent < 50) {
+      return { color: "#b91c1c" };
+    } else if (perfectMatchesPercent === 100) {
+      return { color: "#15803d" };
+    } else {
+      return { color: "#a16207" };
+    }
+  }, [perfectMatchesPercent]);
+
   return (
     <div className="flex items-center">
       <div className="bg-gray-50 px-3 py-2 rounded-md mr-2 flex items-center">
@@ -78,11 +88,13 @@ const ScoreDistributionPanel = ({
           height="16"
           className="mr-2"
         />
-        <div className="text-sm">
-          <span className="font-semibold text-text-secondary">
+        <div className="text-sm" style={scoreColor}>
+          <span className="font-semibold text-text-primary">
             {perfectMatchesPercent}%
           </span>
-          <span className="text-text-primary ml-1">perfect match</span>
+          <span className="text-text-primary ml-1" style={scoreColor}>
+            perfect match
+          </span>
           {improvementText && (
             <span
               className={`ml-2 font-medium ${improvementText.startsWith("+") ? "text-green-500" : "text-red-500"}`}
