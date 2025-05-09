@@ -8,8 +8,9 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { TestCase } from "@/app/lib/types";
-import { getThreshold } from "./utils";
+import { ScoringCriteria, TestCase } from "@/app/lib/types";
+import { calculateAlignmentScore, getThreshold } from "./utils";
+import { useMemo } from "react";
 
 type VersionData = {
   id: string;
@@ -21,36 +22,7 @@ type VersionData = {
 type VersionComparisonChartProps = {
   promptVersions: VersionData[];
   currentPromptId: string | undefined;
-  scoringCriteria: string;
-};
-
-const calculateAlignmentScore = (
-  testCases: TestCase[] | undefined,
-  scoringCriteria: string,
-): number => {
-  if (!testCases || testCases.length === 0) return 0;
-
-  const testCasesWithBothScores = testCases.filter(
-    (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
-  );
-
-  if (testCasesWithBothScores.length === 0) return 0;
-
-  const perfectMatches = testCasesWithBothScores.filter(
-    (tc) => tc.expectedScore === tc.atlaScore,
-  ).length;
-
-  const closeMatches = testCasesWithBothScores.filter(
-    (tc) =>
-      tc.expectedScore !== tc.atlaScore &&
-      Math.abs(tc.expectedScore! - tc.atlaScore!) <=
-        getThreshold(scoringCriteria),
-  ).length;
-
-  const alignmentScore =
-    (perfectMatches + closeMatches * 0.5) / testCasesWithBothScores.length;
-
-  return parseFloat(alignmentScore.toFixed(2));
+  scoringCriteria: ScoringCriteria;
 };
 
 const VersionComparisonChart = ({
@@ -58,16 +30,24 @@ const VersionComparisonChart = ({
   currentPromptId,
   scoringCriteria,
 }: VersionComparisonChartProps) => {
-  const chartData = promptVersions
-    .filter((version) => version.testCases && version.testCases.length > 0)
-    .map((version) => ({
-      version: version.version,
-      alignment:
-        version.alignment ||
-        calculateAlignmentScore(version.testCases, scoringCriteria),
-      current: version.id === currentPromptId,
-    }))
-    .sort((a, b) => a.version - b.version);
+  const threshold = useMemo(
+    () => getThreshold(scoringCriteria),
+    [scoringCriteria],
+  );
+  const chartData = useMemo(
+    () =>
+      promptVersions
+        .filter((version) => version.testCases && version.testCases.length > 0)
+        .map((version) => ({
+          version: version.version,
+          alignment:
+            version.alignment ||
+            calculateAlignmentScore(version.testCases, threshold),
+          current: version.id === currentPromptId,
+        }))
+        .sort((a, b) => a.version - b.version),
+    [currentPromptId, promptVersions, threshold],
+  );
 
   if (chartData.length === 0) {
     return (

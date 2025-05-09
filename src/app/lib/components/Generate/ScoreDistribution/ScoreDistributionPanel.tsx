@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { TestCase } from "@/app/lib/types";
+import { ScoringCriteria, TestCase } from "@/app/lib/types";
 import Image from "next/image";
 import { SecondaryButton } from "@/app/lib/components/Buttons/SecondaryButton";
 import { useVersionHistory } from "@/app/lib/hooks/useVersionHistory";
@@ -7,7 +7,7 @@ import { ScoreDistributionModal } from "./ScoreDistributionModal";
 
 type ScoreDistributionPanelProps = {
   testCases: TestCase[];
-  scoringCriteria: string;
+  scoringCriteria: ScoringCriteria;
   promptVersions: { id: string; version: number }[] | null;
   currentPromptId: string | undefined;
 };
@@ -26,7 +26,9 @@ const ScoreDistributionPanel = ({
     scoringCriteria,
   });
 
-  const totalTestCases = testCases.length;
+  const testCasesWithScores = testCases.filter(
+    (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
+  ).length;
 
   const perfectMatches = testCases.filter(
     (tc) =>
@@ -36,8 +38,8 @@ const ScoreDistributionPanel = ({
   ).length;
 
   const perfectMatchesPercent =
-    totalTestCases > 0
-      ? Math.round((perfectMatches / totalTestCases) * 100)
+    testCasesWithScores > 0
+      ? Math.round((perfectMatches / testCasesWithScores) * 100)
       : 0;
 
   const improvementText = useMemo(() => {
@@ -78,6 +80,25 @@ const ScoreDistributionPanel = ({
       return { color: "#a16207" };
     }
   }, [perfectMatchesPercent]);
+
+  if (testCasesWithScores === 0) {
+    return (
+      <div className="flex items-center">
+        <div className="bg-gray-50 px-3 py-2 rounded-md mr-2 flex items-center">
+          <Image
+            src="/chart-icon.svg"
+            alt="Score distribution"
+            width="16"
+            height="16"
+            className="mr-2"
+          />
+          <div className="text-sm text-gray-500">
+            No scored test cases available
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center">

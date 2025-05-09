@@ -1,4 +1,4 @@
-import { TestCase } from "@/app/lib/types";
+import { ScoringCriteria, TestCase } from "@/app/lib/types";
 import {
   BarChart,
   Bar,
@@ -12,7 +12,7 @@ import { formatScoreLabel } from "@/app/lib/components/Generate/ScoreDistributio
 
 type ScoreDistributionChartProps = {
   testCases: TestCase[];
-  scoringCriteria: string;
+  scoringCriteria: ScoringCriteria;
 };
 
 const ScoreDistributionChart = ({
@@ -21,14 +21,14 @@ const ScoreDistributionChart = ({
 }: ScoreDistributionChartProps) => {
   const scoreCountMap = new Map<string, { expected: number; atla: number }>();
 
-  if (scoringCriteria === "Binary") {
+  if (scoringCriteria === ScoringCriteria.Binary) {
     scoreCountMap.set("0", { expected: 0, atla: 0 });
     scoreCountMap.set("1", { expected: 0, atla: 0 });
-  } else if (scoringCriteria === "OneToFive") {
+  } else if (scoringCriteria === ScoringCriteria.OneToFive) {
     for (let i = 1; i <= 5; i++) {
       scoreCountMap.set(i.toString(), { expected: 0, atla: 0 });
     }
-  } else if (scoringCriteria === "FloatZeroToOne") {
+  } else if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
     for (let i = 0; i <= 10; i++) {
       const score = (i / 10).toFixed(1);
       scoreCountMap.set(score, { expected: 0, atla: 0 });
@@ -38,7 +38,7 @@ const ScoreDistributionChart = ({
   testCases.forEach((testCase) => {
     if (testCase.expectedScore !== null) {
       let expectedScoreKey = testCase.expectedScore.toString();
-      if (scoringCriteria === "FloatZeroToOne") {
+      if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
         const roundedValue = Math.round(testCase.expectedScore * 10) / 10;
         expectedScoreKey = roundedValue.toFixed(1);
       }
@@ -54,7 +54,7 @@ const ScoreDistributionChart = ({
 
     if (testCase.atlaScore !== null) {
       let atlaScoreKey = testCase.atlaScore.toString();
-      if (scoringCriteria === "FloatZeroToOne") {
+      if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
         const roundedValue = Math.round(testCase.atlaScore * 10) / 10;
         atlaScoreKey = roundedValue.toFixed(1);
       }

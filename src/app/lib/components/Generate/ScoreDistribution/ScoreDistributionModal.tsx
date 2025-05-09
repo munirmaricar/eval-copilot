@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { TestCase } from "@/app/lib/types";
+import { useState, useCallback } from "react";
+import { ScoringCriteria, TestCase } from "@/app/lib/types";
 import Image from "next/image";
 import { ScoreDistributionChart } from "./ScoreDistributionChart";
 import { getScoreDifferenceDescription, getScoreColors } from "./utils";
@@ -10,7 +10,7 @@ import { useVersionHistory } from "@/app/lib/hooks/useVersionHistory";
 type ScoreDistributionModalProps = {
   onClose: () => void;
   testCases: TestCase[];
-  scoringCriteria: string;
+  scoringCriteria: ScoringCriteria;
   promptVersions: { id: string; version: number }[] | null;
   currentPromptId: string | undefined;
 };
@@ -29,9 +29,13 @@ const ScoreDistributionModal = ({
     promptVersions,
     currentPromptId,
     currentTestCases: testCases,
+    scoringCriteria,
   });
 
   const hasMultipleVersions = promptVersions && promptVersions.length > 1;
+  const handleTabChange = useCallback((tab: TabType) => {
+    setActiveTab(tab);
+  }, []);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -49,6 +53,7 @@ const ScoreDistributionModal = ({
             />
           </div>
         );
+
       case "comparison":
         if (!hasMultipleVersions) {
           return (
@@ -168,7 +173,6 @@ const ScoreDistributionModal = ({
             />
           </button>
         </div>
-
         <div className="flex border-b">
           <button
             className={classNames(
@@ -177,7 +181,7 @@ const ScoreDistributionModal = ({
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500 hover:text-gray-700",
             )}
-            onClick={() => setActiveTab("distribution")}
+            onClick={() => handleTabChange("distribution")}
           >
             Score Distribution
           </button>
@@ -188,7 +192,7 @@ const ScoreDistributionModal = ({
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500 hover:text-gray-700",
             )}
-            onClick={() => setActiveTab("comparison")}
+            onClick={() => handleTabChange("comparison")}
           >
             Version Comparison
           </button>
@@ -199,7 +203,7 @@ const ScoreDistributionModal = ({
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500 hover:text-gray-700",
             )}
-            onClick={() => setActiveTab("details")}
+            onClick={() => handleTabChange("details")}
           >
             Test Case Details
           </button>
