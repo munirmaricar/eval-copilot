@@ -11,19 +11,35 @@ export const formatScoreLabel = (
   }
 };
 
-export const getScoreColor = (
+export const getScoreColors = (
   expected: number | null,
   atla: number | null,
-): string => {
-  if (expected === null || atla === null) return "bg-gray-200";
+): { backgroundColor: string; textColor: string } => {
+  if (expected === null || atla === null) {
+    return {
+      backgroundColor: "#e5e7eb",
+      textColor: "#6b7280",
+    };
+  }
 
   if (expected === atla) {
-    return "bg-green-200";
-  } else if (Math.abs(expected - atla) <= 1) {
-    return "bg-yellow-200";
-  } else {
-    return "bg-red-200";
+    return {
+      backgroundColor: "#d1fae5",
+      textColor: "#15803d",
+    };
   }
+
+  if (Math.abs(expected - atla) <= 1) {
+    return {
+      backgroundColor: "#fef08a",
+      textColor: "#a16207",
+    };
+  }
+
+  return {
+    backgroundColor: "#fecaca",
+    textColor: "#b91c1c",
+  };
 };
 
 export const getScoreDifferenceDescription = (

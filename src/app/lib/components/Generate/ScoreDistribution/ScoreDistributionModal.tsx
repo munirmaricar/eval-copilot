@@ -2,7 +2,7 @@ import { useState } from "react";
 import { TestCase } from "@/app/lib/types";
 import Image from "next/image";
 import { ScoreDistributionChart } from "./ScoreDistributionChart";
-import { getScoreColor, getScoreDifferenceDescription } from "./utils";
+import { getScoreDifferenceDescription, getScoreColors } from "./utils";
 import classNames from "classnames";
 import { VersionComparisonChart } from "./VersionComparisonChart";
 import { useVersionHistory } from "@/app/lib/hooks/useVersionHistory";
@@ -127,12 +127,10 @@ const ScoreDistributionModal = ({
                       </td>
                       <td className="px-4 py-2 text-sm">
                         <span
-                          className={classNames(
-                            "px-2 py-1 rounded-full text-xs",
-                            getScoreColor(
-                              testCase.expectedScore,
-                              testCase.atlaScore,
-                            ),
+                          className={"px-2 py-1 rounded-full text-xs"}
+                          style={getScoreColors(
+                            testCase.expectedScore,
+                            testCase.atlaScore,
                           )}
                         >
                           {getScoreDifferenceDescription(
