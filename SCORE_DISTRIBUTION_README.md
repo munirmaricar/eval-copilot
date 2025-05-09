@@ -28,6 +28,7 @@ Located below the header in the alignment screen, this panel shows:
 
 - The percentage of perfect matches between expected and Atla scores.
 - A button to open the detailed Score Analysis modal.
+- A color-coded perfect match status (perfect, close, or significant difference).
 
 I added this summary panel to offer users a quick glance into how well their prompts are doing at a particular point in time without having to disrupt their flow with a detailed analysis unless they choose to view it themselves.
 
