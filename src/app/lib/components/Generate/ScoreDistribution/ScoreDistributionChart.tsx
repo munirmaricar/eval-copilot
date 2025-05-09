@@ -37,7 +37,12 @@ const ScoreDistributionChart = ({
 
   testCases.forEach((testCase) => {
     if (testCase.expectedScore !== null) {
-      const expectedScoreKey = testCase.expectedScore.toString();
+      let expectedScoreKey = testCase.expectedScore.toString();
+      if (scoringCriteria === "FloatZeroToOne") {
+        const roundedValue = Math.round(testCase.expectedScore * 10) / 10;
+        expectedScoreKey = roundedValue.toFixed(1);
+      }
+
       if (scoreCountMap.has(expectedScoreKey)) {
         const current = scoreCountMap.get(expectedScoreKey)!;
         scoreCountMap.set(expectedScoreKey, {
@@ -48,7 +53,12 @@ const ScoreDistributionChart = ({
     }
 
     if (testCase.atlaScore !== null) {
-      const atlaScoreKey = testCase.atlaScore.toString();
+      let atlaScoreKey = testCase.atlaScore.toString();
+      if (scoringCriteria === "FloatZeroToOne") {
+        const roundedValue = Math.round(testCase.atlaScore * 10) / 10;
+        atlaScoreKey = roundedValue.toFixed(1);
+      }
+
       if (scoreCountMap.has(atlaScoreKey)) {
         const current = scoreCountMap.get(atlaScoreKey)!;
         scoreCountMap.set(atlaScoreKey, {
@@ -59,13 +69,16 @@ const ScoreDistributionChart = ({
     }
   });
 
-  const chartData = Array.from(scoreCountMap.entries()).map(
-    ([score, counts]) => ({
+  const chartData = Array.from(scoreCountMap.entries())
+    .map(([score, counts]) => ({
       score: formatScoreLabel(score, scoringCriteria),
       expected: counts.expected,
       atla: counts.atla,
-    }),
-  );
+      originalScore: score,
+    }))
+    .sort((a, b) => {
+      return parseFloat(a.originalScore) - parseFloat(b.originalScore);
+    });
 
   return (
     <ResponsiveContainer width="100%" height={200}>

@@ -23,6 +23,7 @@ const ScoreDistributionPanel = ({
     promptVersions,
     currentPromptId,
     currentTestCases: testCases,
+    scoringCriteria,
   });
 
   const totalTestCases = testCases.length;
@@ -39,34 +40,34 @@ const ScoreDistributionPanel = ({
       ? Math.round((perfectMatches / totalTestCases) * 100)
       : 0;
 
-  // Find improvement trend compared to previous version
-  let improvementText = "";
-  if (versionHistoryData.length > 1 && !loading) {
+  const improvementText = useMemo(() => {
+    if (loading || versionHistoryData.length === 0) return "";
+
     const currentVersionData = versionHistoryData.find(
       (v) => v.id === currentPromptId,
     );
-    const sortedVersions = [...versionHistoryData].sort(
-      (a, b) => b.version - a.version,
-    );
-    const currentIndex = sortedVersions.findIndex(
-      (v) => v.id === currentPromptId,
-    );
+    if (!currentVersionData) return "";
 
-    if (currentIndex > 0 && currentIndex < sortedVersions.length) {
-      const previousVersion = sortedVersions[currentIndex - 1];
-      const currentAlignment = currentVersionData?.alignmentScore || 0;
-      const previousAlignment = previousVersion.alignmentScore;
+    const currentVersionNumber = currentVersionData.version;
 
-      const difference = (currentAlignment - previousAlignment) * 100;
+    const previousVersions = versionHistoryData
+      .filter((v) => v.version < currentVersionNumber)
+      .sort((a, b) => b.version - a.version);
 
-      if (Math.abs(difference) >= 1) {
-        improvementText =
-          difference > 0
-            ? `+${Math.round(difference)}% vs v${previousVersion.version}`
-            : `${Math.round(difference)}% vs v${previousVersion.version}`;
-      }
-    }
-  }
+    if (previousVersions.length === 0) return "";
+
+    const previousVersion = previousVersions[0];
+    const currentAlignment = currentVersionData.alignmentScore || 0;
+    const previousAlignment = previousVersion.alignmentScore || 0;
+
+    const difference = Math.round((currentAlignment - previousAlignment) * 100);
+
+    if (Math.abs(difference) < 1) return "";
+
+    return difference > 0
+      ? `+${difference}% vs v${previousVersion.version}`
+      : `${difference}% vs v${previousVersion.version}`;
+  }, [versionHistoryData, currentPromptId, loading]);
 
   const scoreColor = useMemo(() => {
     if (perfectMatchesPercent < 50) {

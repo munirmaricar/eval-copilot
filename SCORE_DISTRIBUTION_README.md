@@ -57,11 +57,33 @@ A detailed table showing:
 - The expected and Atla scores.
 - A color-coded match status (perfect, close, or significant difference).
 
+## Alignment Score Calculation
+
+The alignment score is a weighted metric that measures how well the Atla scores match the expected scores:
+
+1. **Perfect Matches**: Test cases where the Atla score exactly matches the expected score are given full weight (1.0).
+2. **Close Matches**: Test cases where the Atla score is within a threshold of the expected score are given half weight (0.5).
+3. **Significant Differences**: Test cases with larger differences are given no weight (0.0).
+
+The thresholds for determining "close matches" vary by scoring criteria:
+
+- **Binary (0/1)**: No threshold - any difference is significant (threshold = 0)
+- **OneToFive (1-5)**: Threshold of 1 point
+- **FloatZeroToOne (0.0-1.0)**: Threshold of 0.2 (20%)
+
+The alignment score is calculated as:
+
+```
+Alignment Score = (Perfect Matches + (Close Matches × 0.5)) ÷ Total Test Cases
+```
+
+This weighted approach provides a more nuanced view of alignment than simply counting perfect matches, allowing for minor variations while still prioritising exact matches.
+
 ## Technical Implementation
 
 The feature uses:
 
-- [Recharts](https://www.npmjs.com/package/recharts) library for data visualization.
+- [Recharts](https://www.npmjs.com/package/recharts) library for data visualisation.
 - Custom hooks to fetch and process version history data.
 - Tailwind CSS for styling.
 - React context and state for data management.

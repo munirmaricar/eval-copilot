@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { TestCase } from "@/app/lib/types";
+import { getThreshold } from "./utils";
 
 type VersionData = {
   id: string;
@@ -20,9 +21,13 @@ type VersionData = {
 type VersionComparisonChartProps = {
   promptVersions: VersionData[];
   currentPromptId: string | undefined;
+  scoringCriteria: string;
 };
 
-const calculateAlignmentScore = (testCases: TestCase[] | undefined): number => {
+const calculateAlignmentScore = (
+  testCases: TestCase[] | undefined,
+  scoringCriteria: string,
+): number => {
   if (!testCases || testCases.length === 0) return 0;
 
   const testCasesWithBothScores = testCases.filter(
@@ -38,7 +43,8 @@ const calculateAlignmentScore = (testCases: TestCase[] | undefined): number => {
   const closeMatches = testCasesWithBothScores.filter(
     (tc) =>
       tc.expectedScore !== tc.atlaScore &&
-      Math.abs(tc.expectedScore! - tc.atlaScore!) <= 1,
+      Math.abs(tc.expectedScore! - tc.atlaScore!) <=
+        getThreshold(scoringCriteria),
   ).length;
 
   const alignmentScore =
@@ -50,13 +56,15 @@ const calculateAlignmentScore = (testCases: TestCase[] | undefined): number => {
 const VersionComparisonChart = ({
   promptVersions,
   currentPromptId,
+  scoringCriteria,
 }: VersionComparisonChartProps) => {
   const chartData = promptVersions
     .filter((version) => version.testCases && version.testCases.length > 0)
     .map((version) => ({
       version: version.version,
       alignment:
-        version.alignment || calculateAlignmentScore(version.testCases),
+        version.alignment ||
+        calculateAlignmentScore(version.testCases, scoringCriteria),
       current: version.id === currentPromptId,
     }))
     .sort((a, b) => a.version - b.version);

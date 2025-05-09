@@ -84,6 +84,7 @@ const ScoreDistributionModal = ({
                 testCases: version.testCases,
               }))}
               currentPromptId={currentPromptId}
+              scoringCriteria={scoringCriteria}
             />
           </div>
         );
@@ -131,11 +132,13 @@ const ScoreDistributionModal = ({
                           style={getScoreColors(
                             testCase.expectedScore,
                             testCase.atlaScore,
+                            scoringCriteria,
                           )}
                         >
                           {getScoreDifferenceDescription(
                             testCase.expectedScore,
                             testCase.atlaScore,
+                            scoringCriteria,
                           )}
                         </span>
                       </td>

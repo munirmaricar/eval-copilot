@@ -1,3 +1,13 @@
+export const getThreshold = (scoringCriteria: string): number => {
+  if (scoringCriteria === "FloatZeroToOne") {
+    return 0.2;
+  } else if (scoringCriteria === "Binary") {
+    return 0;
+  }
+
+  return 1;
+};
+
 export const formatScoreLabel = (
   score: string,
   scoringCriteria: string,
@@ -14,6 +24,7 @@ export const formatScoreLabel = (
 export const getScoreColors = (
   expected: number | null,
   atla: number | null,
+  scoringCriteria: string,
 ): { backgroundColor: string; textColor: string } => {
   if (expected === null || atla === null) {
     return {
@@ -29,7 +40,7 @@ export const getScoreColors = (
     };
   }
 
-  if (Math.abs(expected - atla) <= 1) {
+  if (Math.abs(expected - atla) <= getThreshold(scoringCriteria)) {
     return {
       backgroundColor: "#fef08a",
       textColor: "#a16207",
@@ -45,12 +56,15 @@ export const getScoreColors = (
 export const getScoreDifferenceDescription = (
   expected: number | null,
   atla: number | null,
+  scoringCriteria: string,
 ): string => {
   if (expected === null || atla === null) return "Missing score";
 
   if (expected === atla) {
     return "Perfect match";
-  } else if (Math.abs(expected - atla) <= 1) {
+  }
+
+  if (Math.abs(expected - atla) <= getThreshold(scoringCriteria)) {
     return "Close match";
   } else {
     return "Significant difference";
