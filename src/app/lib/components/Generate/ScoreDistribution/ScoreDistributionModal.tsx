@@ -159,7 +159,12 @@ const ScoreDistributionModal = ({
         <div className="flex items-center justify-between border-b px-4 py-2">
           <h2 className="text-xl font-bold">Score Analysis</h2>
           <button onClick={onClose} className="p-1">
-            <Image src="/icon-close.svg" alt="Close" width="16" height="16" />
+            <Image
+              src="/close-icon-black.svg"
+              alt="Close"
+              width="24"
+              height="24"
+            />
           </button>
         </div>
 
