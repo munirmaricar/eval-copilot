@@ -26,7 +26,7 @@ const ScoreDistributionPanel = ({
   });
 
   const testCasesWithScores = testCases.filter(
-    (tc) => tc.expectedScore !== null && tc.atlaScore !== null
+    (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
   ).length;
 
   const alignmentScore = useMemo(() => {
@@ -34,7 +34,7 @@ const ScoreDistributionPanel = ({
       return -1;
 
     const currentVersionData = versionHistoryData.find(
-      (v) => v.prompt.id === currentPromptId
+      (v) => v.prompt.id === currentPromptId,
     );
     if (!currentVersionData) return -1;
 
@@ -46,17 +46,17 @@ const ScoreDistributionPanel = ({
       return "";
 
     const currentVersionData = versionHistoryData.find(
-      (v) => v.prompt.id === currentPromptId
+      (v) => v.prompt.id === currentPromptId,
     );
 
     if (!currentVersionData) return "";
 
     const sortedVersions = [...versionHistoryData].sort(
-      (a, b) => a.prompt.version - b.prompt.version
+      (a, b) => a.prompt.version - b.prompt.version,
     );
     if (currentVersionData.prompt.version === 1) return "";
     const previousVersion = sortedVersions.find(
-      (v) => v.prompt.version === currentVersionData.prompt.version - 1
+      (v) => v.prompt.version === currentVersionData.prompt.version - 1,
     );
 
     if (!previousVersion) return "";

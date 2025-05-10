@@ -17,45 +17,10 @@ The Score Distribution feature helps users understand their evaluation metrics b
 1. A summary panel showing the percentage of perfect matches.
 2. A detailed modal with three views:
    - <u>Score Distribution</u>: A bar chart showing the distribution of expected vs. Atla scores.
-   - <u>Version Comparison</u>: A line chart showing how score alignment changes across prompt versions
-   - <u>Test Case Details</u>: A table showing the detailed match status for each test case
+   - <u>Test Case Details</u>: A table showing the detailed match status for each test case.
+   - <u>Version Comparison</u>: A line chart showing how alignment score changes across prompt versions.
 
 ## Key Features
-
-### Score Summary Panel
-
-Located below the header in the alignment screen, this panel shows:
-
-- The percentage of perfect matches between expected and Atla scores.
-- A button to open the detailed Score Analysis modal.
-- A color-coded perfect match status (perfect, close, or significant difference).
-
-I added this summary panel to offer users a quick glance into how well their prompts are doing at a particular point in time without having to disrupt their flow with a detailed analysis unless they choose to view it themselves.
-
-### Score Distribution Chart
-
-This bar chart visualizes:
-
-- The count of expected scores for each score value.
-- The count of Atla scores for each score value.
-
-I added this to allow users to easily compare where the evaluation model is most aligned.
-
-### Version Comparison
-
-The version comparison chart shows:
-
-- How score alignment changes across different prompt versions.
-- Which versions have better alignment.
-- Trends in alignment as the prompt is refined.
-
-### Test Case Details
-
-A detailed table showing:
-
-- Each test case with its input.
-- The expected and Atla scores.
-- A color-coded match status (perfect, close, or significant difference).
 
 ## Alignment Score Calculation
 
@@ -74,10 +39,46 @@ The thresholds for determining "close matches" vary by scoring criteria:
 The alignment score is calculated as:
 
 ```
-Alignment Score = (Perfect Matches + (Close Matches × 0.5)) ÷ Total Test Cases
+Alignment Score = (Perfect Matches + (Close Matches × 0.5)) / Total Test Cases
 ```
 
 This weighted approach provides a more nuanced view of alignment than simply counting perfect matches, allowing for minor variations while still prioritising exact matches.
+
+### Score Summary Panel
+
+Located below the header, this panel shows:
+
+- The alignment score for the selected prompt.
+- A button to open the detailed Score Analysis modal.
+- Color-coding for the percentage for added visual aid.
+- Alignment score improvements compared to the previous version (if applicable).
+
+I added this summary panel to offer users a quick glance into how well their prompts are doing at a particular point in time without having to disrupt their flow with a detailed analysis unless they choose to view it themselves.
+
+### Score Distribution Chart
+
+This bar chart visualizes:
+
+- The count of expected scores for each score value.
+- The count of Atla scores for each score value.
+
+I added this to allow users to easily compare where the evaluation model is most aligned.
+
+### Test Case Details
+
+A detailed table showing:
+
+- Each test case with its input.
+- The expected and Atla scores.
+- A color-coded match status (perfect, close, or significant difference).
+
+### Version Comparison
+
+The version comparison chart shows:
+
+- How alignment score changes across different prompt versions.
+- Which versions have better alignment.
+- Trends in alignment as the prompt is refined.
 
 ## Technical Implementation
 
@@ -97,10 +98,10 @@ The feature uses:
 ## How to Use
 
 1. Create test cases and run evaluations.
-2. View the summary score alignment in the header.
+2. View the summary alignment score in the header.
 3. Click "View score distribution" to open the detailed analysis.
 4. Use the tabs to switch between different analysis views.
-5. Create new prompt versions to compare alignment across versions.
+5. Create new prompt versions to compare alignment score across versions.
 
 ## Future Enhancements
 
