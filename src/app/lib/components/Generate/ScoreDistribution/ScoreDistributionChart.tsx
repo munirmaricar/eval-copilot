@@ -10,9 +10,10 @@ import {
 } from "recharts";
 import { formatScoreLabel } from "@/app/lib/components/Generate/ScoreDistribution/utils";
 import { useMemo } from "react";
+import { GetTestCasesForMetricResponse } from "@/app/lib/api/testCases/getTestCasesForMetric";
 
 type ScoreDistributionChartProps = {
-  testCases: TestCase[];
+  testCases: GetTestCasesForMetricResponse;
   scoringCriteria: ScoringCriteria;
 };
 
@@ -38,10 +39,10 @@ const ScoreDistributionChart = ({
     }
 
     testCases.forEach((testCase) => {
-      if (testCase.expectedScore !== null) {
-        let expectedScoreKey = testCase.expectedScore.toString();
+      if (testCase.expected_score !== null) {
+        let expectedScoreKey = testCase.expected_score.toString();
         if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
-          const roundedValue = Math.round(testCase.expectedScore * 10) / 10;
+          const roundedValue = Math.round(testCase.expected_score * 10) / 10;
           expectedScoreKey = roundedValue.toFixed(1);
         }
 
@@ -54,10 +55,10 @@ const ScoreDistributionChart = ({
         }
       }
 
-      if (testCase.atlaScore !== null) {
-        let atlaScoreKey = testCase.atlaScore.toString();
+      if (testCase.atla_score !== null) {
+        let atlaScoreKey = testCase.atla_score.toString();
         if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
-          const roundedValue = Math.round(testCase.atlaScore * 10) / 10;
+          const roundedValue = Math.round(testCase.atla_score * 10) / 10;
           atlaScoreKey = roundedValue.toFixed(1);
         }
 

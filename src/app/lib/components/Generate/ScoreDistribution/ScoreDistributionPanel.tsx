@@ -1,33 +1,32 @@
 import { useMemo, useState } from "react";
-import { ScoringCriteria, TestCase } from "@/app/lib/types";
+import { PromptVersion, ScoringCriteria } from "@/app/lib/types";
 import Image from "next/image";
 import { SecondaryButton } from "@/app/lib/components/Buttons/SecondaryButton";
 import { useVersionHistory } from "@/app/lib/hooks/useVersionHistory";
 import { ScoreDistributionModal } from "./ScoreDistributionModal";
 
 type ScoreDistributionPanelProps = {
-  testCases: TestCase[];
-  scoringCriteria: ScoringCriteria;
-  promptVersions: { id: string; version: number }[] | null;
+  promptVersions: PromptVersion[] | null;
+  metricId: string | undefined;
   currentPromptId: string | undefined;
+  scoringCriteria: ScoringCriteria | undefined;
 };
 
 const ScoreDistributionPanel = ({
-  testCases,
-  scoringCriteria,
   promptVersions,
+  metricId,
   currentPromptId,
+  scoringCriteria = ScoringCriteria.OneToFive,
 }: ScoreDistributionPanelProps) => {
   const [showModal, setShowModal] = useState(false);
-  const { versionHistoryData, loading } = useVersionHistory({
+  const { versionHistoryData, testCases, loading } = useVersionHistory({
     promptVersions,
-    currentPromptId,
-    currentTestCases: testCases,
+    metricId,
     scoringCriteria,
   });
 
   const testCasesWithScores = testCases.filter(
-    (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
+    (tc) => tc.expected_score !== null && tc.atla_score !== null,
   ).length;
 
   const alignmentScore = useMemo(() => {
@@ -35,7 +34,7 @@ const ScoreDistributionPanel = ({
       return -1;
 
     const currentVersionData = versionHistoryData.find(
-      (v) => v.id === currentPromptId,
+      (v) => v.prompt.id === currentPromptId,
     );
 
     if (!currentVersionData || !currentVersionData.alignmentScore) return -1;
@@ -48,17 +47,17 @@ const ScoreDistributionPanel = ({
       return "";
 
     const currentVersionData = versionHistoryData.find(
-      (v) => v.id === currentPromptId,
+      (v) => v.prompt.id === currentPromptId,
     );
 
     if (!currentVersionData || !currentVersionData.alignmentScore) return "";
 
     const sortedVersions = [...versionHistoryData].sort(
-      (a, b) => b.version - a.version,
+      (a, b) => b.prompt.version - a.prompt.version,
     );
 
     const currentVersionIndex = sortedVersions.findIndex(
-      (v) => v.id === currentPromptId,
+      (v) => v.prompt.id === currentPromptId,
     );
 
     if (
@@ -81,8 +80,8 @@ const ScoreDistributionPanel = ({
     if (difference < 1) return "";
 
     return difference > 0
-      ? `+${difference}% vs v${previousVersion.version}`
-      : `${difference}% vs v${previousVersion.version}`;
+      ? `+${difference}% vs v${previousVersion.prompt.version}`
+      : `${difference}% vs v${previousVersion.prompt.version}`;
   }, [versionHistoryData, currentPromptId, loading]);
 
   const scoreColor = useMemo(() => {
@@ -97,14 +96,7 @@ const ScoreDistributionPanel = ({
     }
   }, [alignmentScore]);
 
-  if (
-    testCasesWithScores === 0 ||
-    (!loading &&
-      (!versionHistoryData ||
-        versionHistoryData.length === 0 ||
-        !currentPromptId ||
-        !versionHistoryData.find((v) => v.id === currentPromptId)))
-  ) {
+  if (testCasesWithScores === 0) {
     return (
       <div className="flex items-center">
         <div className="bg-gray-50 px-3 py-2 rounded-md mr-2 flex items-center">
@@ -152,9 +144,10 @@ const ScoreDistributionPanel = ({
       {showModal && (
         <ScoreDistributionModal
           onClose={() => setShowModal(false)}
-          testCases={testCases}
           scoringCriteria={scoringCriteria}
-          promptVersions={promptVersions}
+          versionHistory={versionHistoryData}
+          versionHistoryLoading={loading}
+          testCases={testCases}
           currentPromptId={currentPromptId}
         />
       )}

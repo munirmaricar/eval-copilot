@@ -1,42 +1,38 @@
 import { useState, useCallback } from "react";
 import {
   ScoringCriteria,
-  TestCase,
   ScoreDistributionTab,
+  VersionHistoryData,
 } from "@/app/lib/types";
 import Image from "next/image";
 import { ScoreDistributionChart } from "./ScoreDistributionChart";
 import { getScoreDetails } from "./utils";
 import classNames from "classnames";
 import { VersionComparisonChart } from "./VersionComparisonChart";
-import { useVersionHistory } from "@/app/lib/hooks/useVersionHistory";
+import { GetTestCasesForMetricResponse } from "@/app/lib/api/testCases/getTestCasesForMetric";
 
 type ScoreDistributionModalProps = {
   onClose: () => void;
-  testCases: TestCase[];
   scoringCriteria: ScoringCriteria;
-  promptVersions: { id: string; version: number }[] | null;
+  versionHistory: VersionHistoryData[];
+  versionHistoryLoading: boolean;
+  testCases: GetTestCasesForMetricResponse;
   currentPromptId: string | undefined;
 };
 
 const ScoreDistributionModal = ({
   onClose,
-  testCases,
   scoringCriteria,
-  promptVersions,
+  versionHistory,
+  versionHistoryLoading,
+  testCases,
   currentPromptId,
 }: ScoreDistributionModalProps) => {
   const [activeTab, setActiveTab] = useState<ScoreDistributionTab>(
     ScoreDistributionTab.Distribution,
   );
-  const { versionHistoryData, loading } = useVersionHistory({
-    promptVersions,
-    currentPromptId,
-    currentTestCases: testCases,
-    scoringCriteria,
-  });
 
-  const hasMultipleVersions = promptVersions && promptVersions.length > 1;
+  const hasMultipleVersions = versionHistory.length > 1;
   const handleTabChange = useCallback((tab: ScoreDistributionTab) => {
     setActiveTab(tab);
   }, []);
@@ -70,7 +66,7 @@ const ScoreDistributionModal = ({
           );
         }
 
-        if (loading) {
+        if (versionHistoryLoading) {
           return (
             <div className="p-4 text-center">
               <p>Loading version history data...</p>
@@ -86,14 +82,8 @@ const ScoreDistributionModal = ({
               prompt versions.
             </p>
             <VersionComparisonChart
-              promptVersions={versionHistoryData.map((version) => ({
-                id: version.id,
-                version: version.version,
-                alignment: version.alignmentScore,
-                testCases: version.testCases,
-              }))}
+              versionHistory={versionHistory}
               currentPromptId={currentPromptId}
-              scoringCriteria={scoringCriteria}
             />
           </div>
         );
@@ -127,8 +117,8 @@ const ScoreDistributionModal = ({
                 <tbody className="bg-white divide-y divide-gray-200">
                   {testCases.map((testCase) => {
                     const { text, color, backgroundColor } = getScoreDetails(
-                      testCase.expectedScore,
-                      testCase.atlaScore,
+                      testCase.expected_score,
+                      testCase.atla_score,
                       scoringCriteria,
                     );
 
@@ -138,10 +128,10 @@ const ScoreDistributionModal = ({
                           {testCase.input ?? "-"}
                         </td>
                         <td className="px-4 py-2 text-sm">
-                          {testCase.expectedScore ?? "-"}
+                          {testCase.expected_score ?? "-"}
                         </td>
                         <td className="px-4 py-2 text-sm">
-                          {testCase.atlaScore ?? "-"}
+                          {testCase.atla_score ?? "-"}
                         </td>
                         <td className="px-4 py-2 text-sm">
                           <span

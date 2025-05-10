@@ -4,6 +4,16 @@ export enum ScoreDistributionTab {
   Details = "details",
 }
 
+export interface PromptVersion {
+  id: string;
+  version: number;
+}
+
+export interface VersionHistoryData {
+  prompt: PromptVersion;
+  alignmentScore: number;
+}
+
 export enum ScoringCriteria {
   OneToFive = "OneToFive",
   Binary = "Binary",

@@ -8,43 +8,28 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { ScoringCriteria, TestCase } from "@/app/lib/types";
-import { calculateAlignmentScore, getThreshold } from "./utils";
+import { VersionHistoryData } from "@/app/lib/types";
 import { useMemo } from "react";
 
-type VersionData = {
-  id: string;
-  version: number;
-  testCases?: TestCase[];
-  alignment?: number;
-};
-
 type VersionComparisonChartProps = {
-  promptVersions: VersionData[];
+  versionHistory: VersionHistoryData[];
   currentPromptId: string | undefined;
-  scoringCriteria: ScoringCriteria;
 };
 
 const VersionComparisonChart = ({
-  promptVersions,
+  versionHistory,
   currentPromptId,
-  scoringCriteria,
 }: VersionComparisonChartProps) => {
-  const threshold = useMemo(
-    () => getThreshold(scoringCriteria),
-    [scoringCriteria],
-  );
   const chartData = useMemo(
     () =>
-      promptVersions
-        .filter((version) => version.testCases && version.testCases.length > 0)
+      versionHistory
         .map((version) => ({
-          version: version.version,
-          alignment: calculateAlignmentScore(version.testCases, threshold),
-          current: version.id === currentPromptId,
+          version: version.prompt.version,
+          alignment: version.alignmentScore,
+          current: version.prompt.id === currentPromptId,
         }))
         .sort((a, b) => a.version - b.version),
-    [currentPromptId, promptVersions, threshold],
+    [currentPromptId, versionHistory],
   );
 
   if (chartData.length === 0) {
