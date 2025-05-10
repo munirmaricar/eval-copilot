@@ -1,8 +1,12 @@
 import { useState, useCallback } from "react";
-import { ScoringCriteria, TestCase } from "@/app/lib/types";
+import {
+  ScoringCriteria,
+  TestCase,
+  ScoreDistributionTab,
+} from "@/app/lib/types";
 import Image from "next/image";
 import { ScoreDistributionChart } from "./ScoreDistributionChart";
-import { getScoreDifferenceDescription, getScoreColors } from "./utils";
+import { getScoreDetails } from "./utils";
 import classNames from "classnames";
 import { VersionComparisonChart } from "./VersionComparisonChart";
 import { useVersionHistory } from "@/app/lib/hooks/useVersionHistory";
@@ -15,8 +19,6 @@ type ScoreDistributionModalProps = {
   currentPromptId: string | undefined;
 };
 
-type TabType = "distribution" | "comparison" | "details";
-
 const ScoreDistributionModal = ({
   onClose,
   testCases,
@@ -24,7 +26,9 @@ const ScoreDistributionModal = ({
   promptVersions,
   currentPromptId,
 }: ScoreDistributionModalProps) => {
-  const [activeTab, setActiveTab] = useState<TabType>("distribution");
+  const [activeTab, setActiveTab] = useState<ScoreDistributionTab>(
+    ScoreDistributionTab.Distribution,
+  );
   const { versionHistoryData, loading } = useVersionHistory({
     promptVersions,
     currentPromptId,
@@ -33,13 +37,13 @@ const ScoreDistributionModal = ({
   });
 
   const hasMultipleVersions = promptVersions && promptVersions.length > 1;
-  const handleTabChange = useCallback((tab: TabType) => {
+  const handleTabChange = useCallback((tab: ScoreDistributionTab) => {
     setActiveTab(tab);
   }, []);
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "distribution":
+      case ScoreDistributionTab.Distribution:
         return (
           <div className="p-4">
             <h3 className="font-semibold text-lg mb-2">Score Distribution</h3>
@@ -54,7 +58,7 @@ const ScoreDistributionModal = ({
           </div>
         );
 
-      case "comparison":
+      case ScoreDistributionTab.Comparison:
         if (!hasMultipleVersions) {
           return (
             <div className="p-4 text-center">
@@ -93,7 +97,8 @@ const ScoreDistributionModal = ({
             />
           </div>
         );
-      case "details":
+
+      case ScoreDistributionTab.Details:
         return (
           <div className="p-4">
             <h3 className="font-semibold text-lg mb-2">Test Case Details</h3>
@@ -120,35 +125,38 @@ const ScoreDistributionModal = ({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {testCases.map((testCase) => (
-                    <tr key={testCase.id}>
-                      <td className="px-4 py-2 text-sm text-gray-800 max-w-[200px] truncate">
-                        {testCase.input ?? "-"}
-                      </td>
-                      <td className="px-4 py-2 text-sm">
-                        {testCase.expectedScore ?? "-"}
-                      </td>
-                      <td className="px-4 py-2 text-sm">
-                        {testCase.atlaScore ?? "-"}
-                      </td>
-                      <td className="px-4 py-2 text-sm">
-                        <span
-                          className={"px-2 py-1 rounded-full text-xs"}
-                          style={getScoreColors(
-                            testCase.expectedScore,
-                            testCase.atlaScore,
-                            scoringCriteria,
-                          )}
-                        >
-                          {getScoreDifferenceDescription(
-                            testCase.expectedScore,
-                            testCase.atlaScore,
-                            scoringCriteria,
-                          )}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                  {testCases.map((testCase) => {
+                    const { text, color, backgroundColor } = getScoreDetails(
+                      testCase.expectedScore,
+                      testCase.atlaScore,
+                      scoringCriteria,
+                    );
+
+                    return (
+                      <tr key={testCase.id}>
+                        <td className="px-4 py-2 text-sm text-gray-800 max-w-[200px] truncate">
+                          {testCase.input ?? "-"}
+                        </td>
+                        <td className="px-4 py-2 text-sm">
+                          {testCase.expectedScore ?? "-"}
+                        </td>
+                        <td className="px-4 py-2 text-sm">
+                          {testCase.atlaScore ?? "-"}
+                        </td>
+                        <td className="px-4 py-2 text-sm">
+                          <span
+                            className={"px-2 py-1 rounded-full text-xs"}
+                            style={{
+                              color,
+                              backgroundColor,
+                            }}
+                          >
+                            {text}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -177,33 +185,33 @@ const ScoreDistributionModal = ({
           <button
             className={classNames(
               "px-4 py-2 text-sm font-medium",
-              activeTab === "distribution"
+              activeTab === ScoreDistributionTab.Distribution
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500 hover:text-gray-700",
             )}
-            onClick={() => handleTabChange("distribution")}
+            onClick={() => handleTabChange(ScoreDistributionTab.Distribution)}
           >
             Score Distribution
           </button>
           <button
             className={classNames(
               "px-4 py-2 text-sm font-medium",
-              activeTab === "comparison"
+              activeTab === ScoreDistributionTab.Comparison
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500 hover:text-gray-700",
             )}
-            onClick={() => handleTabChange("comparison")}
+            onClick={() => handleTabChange(ScoreDistributionTab.Comparison)}
           >
             Version Comparison
           </button>
           <button
             className={classNames(
               "px-4 py-2 text-sm font-medium",
-              activeTab === "details"
+              activeTab === ScoreDistributionTab.Details
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500 hover:text-gray-700",
             )}
-            onClick={() => handleTabChange("details")}
+            onClick={() => handleTabChange(ScoreDistributionTab.Details)}
           >
             Test Case Details
           </button>

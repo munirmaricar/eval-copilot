@@ -1,3 +1,9 @@
+export enum ScoreDistributionTab {
+  Distribution = "distribution",
+  Comparison = "comparison",
+  Details = "details",
+}
+
 export enum ScoringCriteria {
   OneToFive = "OneToFive",
   Binary = "Binary",

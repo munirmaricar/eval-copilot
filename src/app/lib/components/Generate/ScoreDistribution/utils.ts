@@ -43,61 +43,46 @@ export const formatScoreLabel = (
   score: string,
   scoringCriteria: ScoringCriteria,
 ): string => {
-  if (scoringCriteria === ScoringCriteria.Binary) {
-    return score === "0" ? "Fail" : "Pass";
-  } else if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
-    return score;
-  } else {
-    return score;
+  switch (scoringCriteria) {
+    case ScoringCriteria.Binary:
+      return score === "0" ? "Fail" : "Pass";
+    default:
+      return score;
   }
 };
 
-export const getScoreColors = (
+export const getScoreDetails = (
   expected: number | null,
   atla: number | null,
   scoringCriteria: ScoringCriteria,
-): { backgroundColor: string; color: string } => {
+): { text: string; color: string; backgroundColor: string } => {
   if (expected === null || atla === null) {
     return {
-      backgroundColor: "#e5e7eb",
+      text: "Missing score",
       color: "#6b7280",
+      backgroundColor: "#e5e7eb",
     };
   }
 
   if (expected === atla) {
     return {
-      backgroundColor: "#d1fae5",
+      text: "Perfect match",
       color: "#15803d",
+      backgroundColor: "#d1fae5",
     };
   }
 
   if (Math.abs(expected - atla) <= getThreshold(scoringCriteria)) {
     return {
-      backgroundColor: "#fef08a",
+      text: "Close match",
       color: "#a16207",
+      backgroundColor: "#fef08a",
     };
   }
 
   return {
-    backgroundColor: "#fecaca",
+    text: "Significant difference",
     color: "#b91c1c",
+    backgroundColor: "#fecaca",
   };
-};
-
-export const getScoreDifferenceDescription = (
-  expected: number | null,
-  atla: number | null,
-  scoringCriteria: ScoringCriteria,
-): string => {
-  if (expected === null || atla === null) return "Missing score";
-
-  if (expected === atla) {
-    return "Perfect match";
-  }
-
-  if (Math.abs(expected - atla) <= getThreshold(scoringCriteria)) {
-    return "Close match";
-  } else {
-    return "Significant difference";
-  }
 };
