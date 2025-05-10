@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { formatScoreLabel } from "@/app/lib/components/Generate/ScoreDistribution/utils";
+import { useMemo } from "react";
 
 type ScoreDistributionChartProps = {
   testCases: TestCase[];
@@ -19,66 +20,68 @@ const ScoreDistributionChart = ({
   testCases,
   scoringCriteria,
 }: ScoreDistributionChartProps) => {
-  const scoreCountMap = new Map<string, { expected: number; atla: number }>();
+  const chartData = useMemo(() => {
+    const scoreCountMap = new Map<string, { expected: number; atla: number }>();
 
-  if (scoringCriteria === ScoringCriteria.Binary) {
-    scoreCountMap.set("0", { expected: 0, atla: 0 });
-    scoreCountMap.set("1", { expected: 0, atla: 0 });
-  } else if (scoringCriteria === ScoringCriteria.OneToFive) {
-    for (let i = 1; i <= 5; i++) {
-      scoreCountMap.set(i.toString(), { expected: 0, atla: 0 });
-    }
-  } else if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
-    for (let i = 0; i <= 10; i++) {
-      const score = (i / 10).toFixed(1);
-      scoreCountMap.set(score, { expected: 0, atla: 0 });
-    }
-  }
-
-  testCases.forEach((testCase) => {
-    if (testCase.expectedScore !== null) {
-      let expectedScoreKey = testCase.expectedScore.toString();
-      if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
-        const roundedValue = Math.round(testCase.expectedScore * 10) / 10;
-        expectedScoreKey = roundedValue.toFixed(1);
+    if (scoringCriteria === ScoringCriteria.Binary) {
+      scoreCountMap.set("0", { expected: 0, atla: 0 });
+      scoreCountMap.set("1", { expected: 0, atla: 0 });
+    } else if (scoringCriteria === ScoringCriteria.OneToFive) {
+      for (let i = 1; i <= 5; i++) {
+        scoreCountMap.set(i.toString(), { expected: 0, atla: 0 });
       }
-
-      if (scoreCountMap.has(expectedScoreKey)) {
-        const current = scoreCountMap.get(expectedScoreKey)!;
-        scoreCountMap.set(expectedScoreKey, {
-          ...current,
-          expected: current.expected + 1,
-        });
+    } else if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
+      for (let i = 0; i <= 10; i++) {
+        const score = (i / 10).toFixed(1);
+        scoreCountMap.set(score, { expected: 0, atla: 0 });
       }
     }
 
-    if (testCase.atlaScore !== null) {
-      let atlaScoreKey = testCase.atlaScore.toString();
-      if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
-        const roundedValue = Math.round(testCase.atlaScore * 10) / 10;
-        atlaScoreKey = roundedValue.toFixed(1);
+    testCases.forEach((testCase) => {
+      if (testCase.expectedScore !== null) {
+        let expectedScoreKey = testCase.expectedScore.toString();
+        if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
+          const roundedValue = Math.round(testCase.expectedScore * 10) / 10;
+          expectedScoreKey = roundedValue.toFixed(1);
+        }
+
+        if (scoreCountMap.has(expectedScoreKey)) {
+          const current = scoreCountMap.get(expectedScoreKey)!;
+          scoreCountMap.set(expectedScoreKey, {
+            ...current,
+            expected: current.expected + 1,
+          });
+        }
       }
 
-      if (scoreCountMap.has(atlaScoreKey)) {
-        const current = scoreCountMap.get(atlaScoreKey)!;
-        scoreCountMap.set(atlaScoreKey, {
-          ...current,
-          atla: current.atla + 1,
-        });
-      }
-    }
-  });
+      if (testCase.atlaScore !== null) {
+        let atlaScoreKey = testCase.atlaScore.toString();
+        if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
+          const roundedValue = Math.round(testCase.atlaScore * 10) / 10;
+          atlaScoreKey = roundedValue.toFixed(1);
+        }
 
-  const chartData = Array.from(scoreCountMap.entries())
-    .map(([score, counts]) => ({
-      score: formatScoreLabel(score, scoringCriteria),
-      expected: counts.expected,
-      atla: counts.atla,
-      originalScore: score,
-    }))
-    .sort((a, b) => {
-      return parseFloat(a.originalScore) - parseFloat(b.originalScore);
+        if (scoreCountMap.has(atlaScoreKey)) {
+          const current = scoreCountMap.get(atlaScoreKey)!;
+          scoreCountMap.set(atlaScoreKey, {
+            ...current,
+            atla: current.atla + 1,
+          });
+        }
+      }
     });
+
+    return Array.from(scoreCountMap.entries())
+      .map(([score, counts]) => ({
+        score: formatScoreLabel(score, scoringCriteria),
+        expected: counts.expected,
+        atla: counts.atla,
+        originalScore: score,
+      }))
+      .sort((a, b) => {
+        return parseFloat(a.originalScore) - parseFloat(b.originalScore);
+      });
+  }, [testCases, scoringCriteria]);
 
   return (
     <ResponsiveContainer width="100%" height={200}>
