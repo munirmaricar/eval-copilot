@@ -54,7 +54,7 @@ export function PopulatedPromptHeader(props: {
             selectedPrompt={props.selectedPrompt}
             onChange={props.onVersionChange}
             prompts={props.prompts}
-            className="mr-3"
+            className="mr-3 z-[9999]"
           />
         )}
         <div

@@ -103,7 +103,7 @@ function GenerateHeader({
                 })
               }
               prompts={selectedMetric?.prompts || null}
-              className="mr-3"
+              className="mr-3 z-[9999]"
             />
           )}
           <CohensKappa kappa={kappa} />
