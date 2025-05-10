@@ -20,8 +20,8 @@ const ScoreDistributionPanel = ({
 }: ScoreDistributionPanelProps) => {
   const [showModal, setShowModal] = useState(false);
   const { versionHistoryData, loading } = useVersionHistory({
+    currentPromptId,
     promptVersions,
-    testCases,
     scoringCriteria,
   });
 
@@ -49,7 +49,7 @@ const ScoreDistributionPanel = ({
       (v) => v.prompt.id === currentPromptId,
     );
 
-    if (!currentVersionData || !currentVersionData.alignmentScore) return "";
+    if (!currentVersionData) return "";
 
     const sortedVersions = [...versionHistoryData].sort(
       (a, b) => b.prompt.version - a.prompt.version,

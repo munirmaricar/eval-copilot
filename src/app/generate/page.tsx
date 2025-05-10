@@ -8,7 +8,7 @@ import { GenerateBody } from "@/app/lib/components/Generate/GenerateBody/Generat
 import { useTestCaseData } from "@/app/generate/useTestCaseData";
 import { GenerateFooter } from "@/app/lib/components/Generate/GenerateFooter/GenerateFooter";
 import { useRunEvaluations } from "@/app/generate/useRunEvaluations";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PromptModal } from "@/app/lib/components/Generate/Prompt/PromptModal";
 import { useCohensKappa } from "@/app/generate/useCohensKappa";
 import { useTestCaseCollections } from "@/app/generate/useTestCaseCollections";
@@ -63,6 +63,7 @@ export default function Generate() {
     examples: selectedMetric?.few_shots,
     setTestCaseValues,
     completeTestCases,
+    currentPromptId: selectedPrompt?.id,
   });
 
   const {
@@ -78,6 +79,13 @@ export default function Generate() {
     });
 
   const metricMainPageUrl = `/?metric=${selectedMetric?.id}&prompt=${selectedPrompt?.id}`;
+
+  const isCompleteTestCasesNull = completeTestCases === null;
+
+  useEffect(() => {
+    if (!selectedPrompt || isLoading || isCompleteTestCasesNull) return;
+    runAllEvaluations();
+  }, [selectedPrompt, isLoading, isCompleteTestCasesNull]);
 
   return (
     <main className="h-full w-full bg-gray flex items-stretch flex-col p-2.5">

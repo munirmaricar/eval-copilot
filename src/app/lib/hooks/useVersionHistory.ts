@@ -10,13 +10,33 @@ import {
   getThreshold,
 } from "@/app/lib/components/Generate/ScoreDistribution/utils";
 
+export const storePromptVersionTestCases = (
+  promptVersionId: string,
+  testCases: TestCase[],
+) => {
+  localStorage.setItem(
+    `promptVersionTestCases-${promptVersionId}`,
+    JSON.stringify(testCases),
+  );
+};
+
+export const getPromptVersionTestCases = (
+  promptVersionId: string,
+): TestCase[] => {
+  const promptVersionTestCases = localStorage.getItem(
+    `promptVersionTestCases-${promptVersionId}`,
+  );
+  if (!promptVersionTestCases) return [];
+  return JSON.parse(promptVersionTestCases);
+};
+
 export const useVersionHistory = ({
+  currentPromptId,
   promptVersions,
-  testCases,
   scoringCriteria,
 }: {
+  currentPromptId: string | undefined;
   promptVersions: PromptVersion[] | null;
-  testCases: TestCase[];
   scoringCriteria: ScoringCriteria;
 }) => {
   const [versionHistoryData, setVersionHistoryData] = useState<
@@ -30,26 +50,25 @@ export const useVersionHistory = ({
   );
 
   useEffect(() => {
-    if (!promptVersions || !testCases || testCases.length === 0) {
+    if (!promptVersions) {
       setVersionHistoryData([]);
       return;
     }
 
+    setLoading(true);
     const sortedPromptVersions = [...promptVersions].sort(
       (a, b) => a.version - b.version,
     );
-
-    setLoading(true);
     const versionHistory = sortedPromptVersions.map((prompt) => {
+      const testCases = getPromptVersionTestCases(prompt.id);
       return {
         prompt: prompt,
         alignmentScore: calculateAlignmentScore(testCases, threshold),
       };
     });
-
     setVersionHistoryData(versionHistory);
     setLoading(false);
-  }, [promptVersions, scoringCriteria, threshold, testCases]);
+  }, [promptVersions, scoringCriteria, threshold, currentPromptId]);
 
-  return { versionHistoryData, testCases, loading };
+  return { versionHistoryData, loading };
 };

@@ -1,8 +1,9 @@
 import { runEvaluation } from "@/app/lib/open-ai/runEvaluation";
-import { ScoringCriteria } from "../lib/types";
+import { ScoringCriteria, TestCase } from "../lib/types";
 import { MetricResponse } from "@/app/lib/api/metrics/get";
 import { useState } from "react";
 import { GetTestCasesForMetricResponse } from "@/app/lib/api/testCases/getTestCasesForMetric";
+import { storePromptVersionTestCases } from "@/app/lib/hooks/useVersionHistory";
 
 export type RunEvaluationInput = {
   id: string;
@@ -18,6 +19,7 @@ function useRunEvaluations({
   examples,
   setTestCaseValues,
   completeTestCases,
+  currentPromptId,
 }: {
   template?: string;
   scoringRuberic?: ScoringCriteria;
@@ -30,6 +32,7 @@ function useRunEvaluations({
     }[],
   ) => void;
   completeTestCases: GetTestCasesForMetricResponse | null;
+  currentPromptId?: string;
 }) {
   const [runningEvaluations, setRunningEvaluations] = useState<string[]>([]);
   const [runningAllEvaluations, setRunningAllEvaluations] =
@@ -107,6 +110,21 @@ function useRunEvaluations({
     }));
 
     await runEvaluations(testCases);
+
+    if (currentPromptId && completeTestCases) {
+      const testCasesForStorage: TestCase[] = completeTestCases.map((tc) => ({
+        id: tc.id,
+        input: tc.input,
+        response: tc.response,
+        context: tc.context,
+        reference: tc.reference,
+        expectedScore: tc.expected_score,
+        atlaScore: tc.atla_score,
+        critique: tc.critique,
+      }));
+      storePromptVersionTestCases(currentPromptId, testCasesForStorage);
+    }
+
     setRunningAllEvaluations(false);
   };
 
