@@ -40,9 +40,7 @@ const VersionComparisonChart = ({
         .filter((version) => version.testCases && version.testCases.length > 0)
         .map((version) => ({
           version: version.version,
-          alignment:
-            version.alignment ||
-            calculateAlignmentScore(version.testCases, threshold),
+          alignment: calculateAlignmentScore(version.testCases, threshold),
           current: version.id === currentPromptId,
         }))
         .sort((a, b) => a.version - b.version),

@@ -1,13 +1,14 @@
 import { ScoringCriteria, TestCase } from "@/app/lib/types";
 
-export const getThreshold = (scoringCriteria: ScoringCriteria): number => {
-  if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
-    return 0.2;
-  } else if (scoringCriteria === ScoringCriteria.Binary) {
-    return 0;
+export const getThreshold = (criteria: ScoringCriteria): number => {
+  switch (criteria) {
+    case ScoringCriteria.FloatZeroToOne:
+      return 0.2;
+    case ScoringCriteria.Binary:
+      return 0;
+    default:
+      return 1;
   }
-
-  return 1;
 };
 
 export const calculateAlignmentScore = (
@@ -55,31 +56,31 @@ export const getScoreColors = (
   expected: number | null,
   atla: number | null,
   scoringCriteria: ScoringCriteria,
-): { backgroundColor: string; textColor: string } => {
+): { backgroundColor: string; color: string } => {
   if (expected === null || atla === null) {
     return {
       backgroundColor: "#e5e7eb",
-      textColor: "#6b7280",
+      color: "#6b7280",
     };
   }
 
   if (expected === atla) {
     return {
       backgroundColor: "#d1fae5",
-      textColor: "#15803d",
+      color: "#15803d",
     };
   }
 
   if (Math.abs(expected - atla) <= getThreshold(scoringCriteria)) {
     return {
       backgroundColor: "#fef08a",
-      textColor: "#a16207",
+      color: "#a16207",
     };
   }
 
   return {
     backgroundColor: "#fecaca",
-    textColor: "#b91c1c",
+    color: "#b91c1c",
   };
 };
 

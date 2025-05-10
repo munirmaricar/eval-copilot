@@ -30,41 +30,55 @@ const ScoreDistributionPanel = ({
     (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
   ).length;
 
-  const perfectMatches = testCases.filter(
-    (tc) =>
-      tc.expectedScore !== null &&
-      tc.atlaScore !== null &&
-      tc.expectedScore === tc.atlaScore,
-  ).length;
-
-  const perfectMatchesPercent =
-    testCasesWithScores > 0
-      ? Math.round((perfectMatches / testCasesWithScores) * 100)
-      : 0;
-
-  const improvementText = useMemo(() => {
-    if (loading || versionHistoryData.length === 0) return "";
+  const alignmentScore = useMemo(() => {
+    if (loading || !versionHistoryData || versionHistoryData.length === 0)
+      return -1;
 
     const currentVersionData = versionHistoryData.find(
       (v) => v.id === currentPromptId,
     );
-    if (!currentVersionData) return "";
 
-    const currentVersionNumber = currentVersionData.version;
+    if (!currentVersionData || !currentVersionData.alignmentScore) return -1;
 
-    const previousVersions = versionHistoryData
-      .filter((v) => v.version < currentVersionNumber)
-      .sort((a, b) => b.version - a.version);
+    return Math.round(currentVersionData.alignmentScore * 100);
+  }, [versionHistoryData, currentPromptId, loading]);
 
-    if (previousVersions.length === 0) return "";
+  const improvementText = useMemo(() => {
+    if (loading || !versionHistoryData || versionHistoryData.length < 2)
+      return "";
 
-    const previousVersion = previousVersions[0];
-    const currentAlignment = currentVersionData.alignmentScore || 0;
-    const previousAlignment = previousVersion.alignmentScore || 0;
+    const currentVersionData = versionHistoryData.find(
+      (v) => v.id === currentPromptId,
+    );
 
-    const difference = Math.round((currentAlignment - previousAlignment) * 100);
+    if (!currentVersionData || !currentVersionData.alignmentScore) return "";
 
-    if (Math.abs(difference) < 1) return "";
+    const sortedVersions = [...versionHistoryData].sort(
+      (a, b) => b.version - a.version,
+    );
+
+    const currentVersionIndex = sortedVersions.findIndex(
+      (v) => v.id === currentPromptId,
+    );
+
+    if (
+      currentVersionIndex === -1 ||
+      currentVersionIndex === sortedVersions.length - 1
+    )
+      return "";
+
+    const previousVersion = sortedVersions[currentVersionIndex + 1];
+
+    if (!previousVersion || !previousVersion.alignmentScore) return "";
+
+    const currentAlignment = currentVersionData.alignmentScore;
+    const previousAlignment = previousVersion.alignmentScore;
+
+    const difference = Math.round(
+      Math.abs((currentAlignment - previousAlignment) * 100),
+    );
+
+    if (difference < 1) return "";
 
     return difference > 0
       ? `+${difference}% vs v${previousVersion.version}`
@@ -72,16 +86,25 @@ const ScoreDistributionPanel = ({
   }, [versionHistoryData, currentPromptId, loading]);
 
   const scoreColor = useMemo(() => {
-    if (perfectMatchesPercent < 50) {
+    if (alignmentScore === -1) {
+      return { color: "gray" };
+    } else if (alignmentScore < 50) {
       return { color: "#b91c1c" };
-    } else if (perfectMatchesPercent === 100) {
+    } else if (alignmentScore === 100) {
       return { color: "#15803d" };
     } else {
       return { color: "#a16207" };
     }
-  }, [perfectMatchesPercent]);
+  }, [alignmentScore]);
 
-  if (testCasesWithScores === 0) {
+  if (
+    testCasesWithScores === 0 ||
+    (!loading &&
+      (!versionHistoryData ||
+        versionHistoryData.length === 0 ||
+        !currentPromptId ||
+        !versionHistoryData.find((v) => v.id === currentPromptId)))
+  ) {
     return (
       <div className="flex items-center">
         <div className="bg-gray-50 px-3 py-2 rounded-md mr-2 flex items-center">
@@ -111,12 +134,7 @@ const ScoreDistributionPanel = ({
           className="mr-2"
         />
         <div className="text-sm" style={scoreColor}>
-          <span className="font-semibold text-text-primary">
-            {perfectMatchesPercent}%
-          </span>
-          <span className="text-text-primary ml-1" style={scoreColor}>
-            perfect match
-          </span>
+          {loading ? "Calculating..." : `${alignmentScore}% alignment score`}
           {improvementText && (
             <span
               className={`ml-2 font-medium ${improvementText.startsWith("+") ? "text-green-500" : "text-red-500"}`}

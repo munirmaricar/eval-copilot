@@ -43,78 +43,39 @@ export const useVersionHistory = ({
 
     const timeoutId = setTimeout(() => {
       try {
-        const versions = promptVersions.map((version) => {
-          if (version.id === currentPromptId) {
-            return {
-              id: version.id,
-              version: version.version,
-              testCases: currentTestCases,
-              alignmentScore: calculateAlignmentScore(
-                currentTestCases,
-                threshold,
-              ),
-            };
-          }
+        const sortedVersions = [...promptVersions].sort(
+          (a, b) => a.version - b.version,
+        );
 
-          const versionFactor = Math.max(
-            0.4,
-            version.version / promptVersions.length,
-          );
+        const currentVersionIndex = sortedVersions.findIndex(
+          (v) => v.id === currentPromptId,
+        );
 
-          const simulatedTestCases = currentTestCases.map((tc) => {
-            if (tc.expectedScore === null || tc.atlaScore === null) {
-              return { ...tc };
-            }
+        if (currentVersionIndex === -1) {
+          setVersionHistoryData([]);
+          setLoading(false);
+          return;
+        }
 
-            const hasMatch = Math.random() < versionFactor;
-            let simulatedScore;
+        const currentVersionAlignment = calculateAlignmentScore(
+          currentTestCases,
+          threshold,
+        );
 
-            if (hasMatch) {
-              simulatedScore = tc.expectedScore;
-            } else {
-              if (scoringCriteria === ScoringCriteria.Binary) {
-                simulatedScore = tc.expectedScore === 1 ? 0 : 1;
-              } else if (scoringCriteria === ScoringCriteria.FloatZeroToOne) {
-                const diff = Math.random() * (1.0 - threshold) + threshold;
-                simulatedScore = Math.max(
-                  0,
-                  Math.min(
-                    1,
-                    tc.expectedScore + (Math.random() > 0.5 ? diff : -diff),
-                  ),
-                );
-                simulatedScore = Math.round(simulatedScore * 10) / 10;
-              } else {
-                const diff = Math.floor(Math.random() * 4) + 1;
-                simulatedScore = Math.max(
-                  1,
-                  Math.min(
-                    5,
-                    tc.expectedScore + (Math.random() > 0.5 ? diff : -diff),
-                  ),
-                );
-              }
-            }
+        const currentVersionData = {
+          id: currentPromptId,
+          version: sortedVersions[currentVersionIndex].version,
+          testCases: currentTestCases,
+          alignmentScore: currentVersionAlignment,
+        };
 
-            return {
-              ...tc,
-              atlaScore: simulatedScore,
-            };
-          });
-
-          return {
-            id: version.id,
-            version: version.version,
-            testCases: simulatedTestCases,
-            alignmentScore: calculateAlignmentScore(
-              simulatedTestCases,
-              threshold,
-            ),
-          };
-        });
-
-        setVersionHistoryData(versions);
+        if (sortedVersions.length === 1) {
+          setVersionHistoryData([currentVersionData]);
+          setLoading(false);
+          return;
+        }
       } catch (error) {
+        console.error("Error generating version history data:", error);
         setVersionHistoryData([]);
       } finally {
         setLoading(false);
