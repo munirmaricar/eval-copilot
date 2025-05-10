@@ -171,7 +171,16 @@ function GenerateHeader({
       {completeTestCases && completeTestCases.length > 0 && (
         <div className="flex items-center mb-2">
           <ScoreDistributionPanel
-            metricId={selectedMetric?.id}
+            testCases={completeTestCases.map((tc) => ({
+              id: tc.id,
+              input: tc.input,
+              response: tc.response,
+              context: tc.context,
+              reference: tc.reference,
+              expectedScore: tc.expected_score,
+              atlaScore: tc.atla_score,
+              critique: tc.critique,
+            }))}
             scoringCriteria={selectedMetric?.scoring_criteria}
             promptVersions={selectedMetric?.prompts || null}
             currentPromptId={selectedPrompt?.id}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { PromptVersion, ScoringCriteria } from "@/app/lib/types";
+import { PromptVersion, ScoringCriteria, TestCase } from "@/app/lib/types";
 import Image from "next/image";
 import { SecondaryButton } from "@/app/lib/components/Buttons/SecondaryButton";
 import { useVersionHistory } from "@/app/lib/hooks/useVersionHistory";
@@ -7,26 +7,26 @@ import { ScoreDistributionModal } from "./ScoreDistributionModal";
 
 type ScoreDistributionPanelProps = {
   promptVersions: PromptVersion[] | null;
-  metricId: string | undefined;
+  testCases: TestCase[];
   currentPromptId: string | undefined;
   scoringCriteria: ScoringCriteria | undefined;
 };
 
 const ScoreDistributionPanel = ({
   promptVersions,
-  metricId,
+  testCases,
   currentPromptId,
   scoringCriteria = ScoringCriteria.OneToFive,
 }: ScoreDistributionPanelProps) => {
   const [showModal, setShowModal] = useState(false);
-  const { versionHistoryData, testCases, loading } = useVersionHistory({
+  const { versionHistoryData, loading } = useVersionHistory({
     promptVersions,
-    metricId,
+    testCases,
     scoringCriteria,
   });
 
   const testCasesWithScores = testCases.filter(
-    (tc) => tc.expected_score !== null && tc.atla_score !== null,
+    (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
   ).length;
 
   const alignmentScore = useMemo(() => {

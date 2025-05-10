@@ -1,5 +1,4 @@
-import { ScoringCriteria } from "@/app/lib/types";
-import { GetTestCasesForMetricResponse } from "@/app/lib/api/testCases/getTestCasesForMetric";
+import { ScoringCriteria, TestCase } from "@/app/lib/types";
 
 export const getThreshold = (criteria: ScoringCriteria): number => {
   switch (criteria) {
@@ -13,25 +12,25 @@ export const getThreshold = (criteria: ScoringCriteria): number => {
 };
 
 export const calculateAlignmentScore = (
-  testCases: GetTestCasesForMetricResponse,
+  testCases: TestCase[],
   threshold: number,
 ): number => {
   if (!testCases || testCases.length === 0) return 0;
 
   const testCasesWithBothScores = testCases.filter(
-    (tc) => tc.expected_score !== null && tc.atla_score !== null,
+    (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
   );
 
   if (testCasesWithBothScores.length === 0) return 0;
 
   const perfectMatches = testCasesWithBothScores.filter(
-    (tc) => tc.expected_score === tc.atla_score,
+    (tc) => tc.expectedScore === tc.atlaScore,
   ).length;
 
   const closeMatches = testCasesWithBothScores.filter(
     (tc) =>
-      tc.expected_score !== tc.atla_score &&
-      Math.abs(tc.expected_score! - tc.atla_score!) <= threshold,
+      tc.expectedScore !== tc.atlaScore &&
+      Math.abs(tc.expectedScore! - tc.atlaScore!) <= threshold,
   ).length;
 
   const alignmentScore =

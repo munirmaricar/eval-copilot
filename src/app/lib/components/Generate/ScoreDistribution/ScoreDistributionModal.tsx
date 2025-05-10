@@ -3,20 +3,20 @@ import {
   ScoringCriteria,
   ScoreDistributionTab,
   VersionHistoryData,
+  TestCase,
 } from "@/app/lib/types";
 import Image from "next/image";
 import { ScoreDistributionChart } from "./ScoreDistributionChart";
 import { getScoreDetails } from "./utils";
 import classNames from "classnames";
 import { VersionComparisonChart } from "./VersionComparisonChart";
-import { GetTestCasesForMetricResponse } from "@/app/lib/api/testCases/getTestCasesForMetric";
 
 type ScoreDistributionModalProps = {
   onClose: () => void;
   scoringCriteria: ScoringCriteria;
   versionHistory: VersionHistoryData[];
   versionHistoryLoading: boolean;
-  testCases: GetTestCasesForMetricResponse;
+  testCases: TestCase[];
   currentPromptId: string | undefined;
 };
 
@@ -117,8 +117,8 @@ const ScoreDistributionModal = ({
                 <tbody className="bg-white divide-y divide-gray-200">
                   {testCases.map((testCase) => {
                     const { text, color, backgroundColor } = getScoreDetails(
-                      testCase.expected_score,
-                      testCase.atla_score,
+                      testCase.expectedScore,
+                      testCase.atlaScore,
                       scoringCriteria,
                     );
 
@@ -128,10 +128,10 @@ const ScoreDistributionModal = ({
                           {testCase.input ?? "-"}
                         </td>
                         <td className="px-4 py-2 text-sm">
-                          {testCase.expected_score ?? "-"}
+                          {testCase.expectedScore ?? "-"}
                         </td>
                         <td className="px-4 py-2 text-sm">
-                          {testCase.atla_score ?? "-"}
+                          {testCase.atlaScore ?? "-"}
                         </td>
                         <td className="px-4 py-2 text-sm">
                           <span

@@ -2,27 +2,26 @@ import { useState, useEffect, useMemo } from "react";
 import {
   PromptVersion,
   ScoringCriteria,
+  TestCase,
   VersionHistoryData,
 } from "@/app/lib/types";
 import {
   calculateAlignmentScore,
   getThreshold,
 } from "@/app/lib/components/Generate/ScoreDistribution/utils";
-import { getTestCasesForMetric } from "../api/testCases/getTestCasesForMetric";
-import { GetTestCasesForMetricResponse } from "../api/testCases/getTestCasesForMetric";
+
 export const useVersionHistory = ({
   promptVersions,
-  metricId,
+  testCases,
   scoringCriteria,
 }: {
   promptVersions: PromptVersion[] | null;
-  metricId: string | undefined;
+  testCases: TestCase[];
   scoringCriteria: ScoringCriteria;
 }) => {
   const [versionHistoryData, setVersionHistoryData] = useState<
     VersionHistoryData[]
   >([]);
-  const [testCases, setTestCases] = useState<GetTestCasesForMetricResponse>([]);
   const [loading, setLoading] = useState(false);
 
   const threshold = useMemo(
@@ -31,9 +30,8 @@ export const useVersionHistory = ({
   );
 
   useEffect(() => {
-    if (!promptVersions || !metricId) {
+    if (!promptVersions || !testCases || testCases.length === 0) {
       setVersionHistoryData([]);
-      setTestCases([]);
       return;
     }
 
@@ -42,28 +40,16 @@ export const useVersionHistory = ({
     );
 
     setLoading(true);
-    getTestCasesForMetric({
-      metricId: metricId,
-    })
-      .then((testCases) => {
-        setTestCases(testCases);
+    const versionHistory = sortedPromptVersions.map((prompt) => {
+      return {
+        prompt: prompt,
+        alignmentScore: calculateAlignmentScore(testCases, threshold),
+      };
+    });
 
-        const versionHistory = sortedPromptVersions.map((prompt) => {
-          return {
-            prompt: prompt,
-            alignmentScore: calculateAlignmentScore(testCases, threshold),
-          };
-        });
-
-        setVersionHistoryData(versionHistory);
-        setLoading(false);
-      })
-      .catch(() => {
-        setVersionHistoryData([]);
-        setTestCases([]);
-        setLoading(false);
-      });
-  }, [promptVersions, scoringCriteria, threshold, metricId]);
+    setVersionHistoryData(versionHistory);
+    setLoading(false);
+  }, [promptVersions, scoringCriteria, threshold, testCases]);
 
   return { versionHistoryData, testCases, loading };
 };
