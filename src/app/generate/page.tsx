@@ -8,7 +8,7 @@ import { GenerateBody } from "@/app/lib/components/Generate/GenerateBody/Generat
 import { useTestCaseData } from "@/app/generate/useTestCaseData";
 import { GenerateFooter } from "@/app/lib/components/Generate/GenerateFooter/GenerateFooter";
 import { useRunEvaluations } from "@/app/generate/useRunEvaluations";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { PromptModal } from "@/app/lib/components/Generate/Prompt/PromptModal";
 import { useCohensKappa } from "@/app/generate/useCohensKappa";
 import { useTestCaseCollections } from "@/app/generate/useTestCaseCollections";
@@ -82,9 +82,14 @@ export default function Generate() {
 
   const isCompleteTestCasesNull = completeTestCases === null;
 
+  const runAllEvaluationsRef = useRef(runAllEvaluations);
+  useEffect(() => {
+    runAllEvaluationsRef.current = runAllEvaluations;
+  }, [runAllEvaluations]);
+
   useEffect(() => {
     if (!selectedPrompt || isLoading || isCompleteTestCasesNull) return;
-    runAllEvaluations();
+    runAllEvaluationsRef.current();
   }, [selectedPrompt, isLoading, isCompleteTestCasesNull]);
 
   return (
