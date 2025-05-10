@@ -36,10 +36,9 @@ const ScoreDistributionPanel = ({
     const currentVersionData = versionHistoryData.find(
       (v) => v.prompt.id === currentPromptId,
     );
+    if (!currentVersionData) return -1;
 
-    if (!currentVersionData || !currentVersionData.alignmentScore) return -1;
-
-    return Math.round(currentVersionData.alignmentScore * 100);
+    return currentVersionData.alignmentScore * 100;
   }, [versionHistoryData, currentPromptId, loading]);
 
   const improvementText = useMemo(() => {
@@ -73,9 +72,7 @@ const ScoreDistributionPanel = ({
     const currentAlignment = currentVersionData.alignmentScore;
     const previousAlignment = previousVersion.alignmentScore;
 
-    const difference = Math.round(
-      Math.abs((currentAlignment - previousAlignment) * 100),
-    );
+    const difference = Math.abs((currentAlignment - previousAlignment) * 100);
 
     if (difference < 1) return "";
 
