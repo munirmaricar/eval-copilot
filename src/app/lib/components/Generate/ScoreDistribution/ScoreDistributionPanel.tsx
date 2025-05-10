@@ -26,7 +26,7 @@ const ScoreDistributionPanel = ({
   });
 
   const testCasesWithScores = testCases.filter(
-    (tc) => tc.expectedScore !== null && tc.atlaScore !== null,
+    (tc) => tc.expectedScore !== null && tc.atlaScore !== null
   ).length;
 
   const alignmentScore = useMemo(() => {
@@ -34,7 +34,7 @@ const ScoreDistributionPanel = ({
       return -1;
 
     const currentVersionData = versionHistoryData.find(
-      (v) => v.prompt.id === currentPromptId,
+      (v) => v.prompt.id === currentPromptId
     );
     if (!currentVersionData) return -1;
 
@@ -46,39 +46,31 @@ const ScoreDistributionPanel = ({
       return "";
 
     const currentVersionData = versionHistoryData.find(
-      (v) => v.prompt.id === currentPromptId,
+      (v) => v.prompt.id === currentPromptId
     );
 
     if (!currentVersionData) return "";
 
     const sortedVersions = [...versionHistoryData].sort(
-      (a, b) => b.prompt.version - a.prompt.version,
+      (a, b) => a.prompt.version - b.prompt.version
+    );
+    if (currentVersionData.prompt.version === 1) return "";
+    const previousVersion = sortedVersions.find(
+      (v) => v.prompt.version === currentVersionData.prompt.version - 1
     );
 
-    const currentVersionIndex = sortedVersions.findIndex(
-      (v) => v.prompt.id === currentPromptId,
-    );
-
-    if (
-      currentVersionIndex === -1 ||
-      currentVersionIndex === sortedVersions.length - 1
-    )
-      return "";
-
-    const previousVersion = sortedVersions[currentVersionIndex + 1];
-
-    if (!previousVersion || !previousVersion.alignmentScore) return "";
+    if (!previousVersion) return "";
 
     const currentAlignment = currentVersionData.alignmentScore;
     const previousAlignment = previousVersion.alignmentScore;
 
-    const difference = Math.abs((currentAlignment - previousAlignment) * 100);
+    const difference = (currentAlignment - previousAlignment) * 100;
 
-    if (difference < 1) return "";
+    if (Math.abs(difference) < 1) return "";
 
     return difference > 0
-      ? `+${difference}% vs v${previousVersion.prompt.version}`
-      : `${difference}% vs v${previousVersion.prompt.version}`;
+      ? `+${difference.toFixed(0)}% vs v${previousVersion.prompt.version}`
+      : `${difference.toFixed(0)}% vs v${previousVersion.prompt.version}`;
   }, [versionHistoryData, currentPromptId, loading]);
 
   const scoreColor = useMemo(() => {
