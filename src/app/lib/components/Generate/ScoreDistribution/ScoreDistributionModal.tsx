@@ -54,40 +54,6 @@ const ScoreDistributionModal = ({
           </div>
         );
 
-      case ScoreDistributionTab.Comparison:
-        if (!hasMultipleVersions) {
-          return (
-            <div className="p-4 text-center">
-              <p>
-                Only one prompt version is available. Create more versions to
-                compare.
-              </p>
-            </div>
-          );
-        }
-
-        if (versionHistoryLoading) {
-          return (
-            <div className="p-4 text-center">
-              <p>Loading version history data...</p>
-            </div>
-          );
-        }
-
-        return (
-          <div className="p-4">
-            <h3 className="font-semibold text-lg mb-2">Version Comparison</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              This chart shows how score alignment changes across different
-              prompt versions.
-            </p>
-            <VersionComparisonChart
-              versionHistory={versionHistory}
-              currentPromptId={currentPromptId}
-            />
-          </div>
-        );
-
       case ScoreDistributionTab.Details:
         return (
           <div className="p-4">
@@ -152,6 +118,41 @@ const ScoreDistributionModal = ({
             </div>
           </div>
         );
+
+      case ScoreDistributionTab.Comparison:
+        if (!hasMultipleVersions) {
+          return (
+            <div className="p-4 text-center">
+              <p>
+                Only one prompt version is available. Create more versions to
+                compare.
+              </p>
+            </div>
+          );
+        }
+
+        if (versionHistoryLoading) {
+          return (
+            <div className="p-4 text-center">
+              <p>Loading version history data...</p>
+            </div>
+          );
+        }
+
+        return (
+          <div className="p-4">
+            <h3 className="font-semibold text-lg mb-2">Version Comparison</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              This chart shows how score alignment changes across different
+              prompt versions.
+            </p>
+            <VersionComparisonChart
+              versionHistory={versionHistory}
+              currentPromptId={currentPromptId}
+            />
+          </div>
+        );
+
       default:
         return null;
     }
@@ -186,17 +187,6 @@ const ScoreDistributionModal = ({
           <button
             className={classNames(
               "px-4 py-2 text-sm font-medium",
-              activeTab === ScoreDistributionTab.Comparison
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-500 hover:text-gray-700",
-            )}
-            onClick={() => handleTabChange(ScoreDistributionTab.Comparison)}
-          >
-            Version Comparison
-          </button>
-          <button
-            className={classNames(
-              "px-4 py-2 text-sm font-medium",
               activeTab === ScoreDistributionTab.Details
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500 hover:text-gray-700",
@@ -204,6 +194,17 @@ const ScoreDistributionModal = ({
             onClick={() => handleTabChange(ScoreDistributionTab.Details)}
           >
             Test Case Details
+          </button>
+          <button
+            className={classNames(
+              "px-4 py-2 text-sm font-medium",
+              activeTab === ScoreDistributionTab.Comparison
+                ? "border-b-2 border-blue-500 text-blue-600"
+                : "text-gray-500 hover:text-gray-700",
+            )}
+            onClick={() => handleTabChange(ScoreDistributionTab.Comparison)}
+          >
+            Version Comparison
           </button>
         </div>
 
